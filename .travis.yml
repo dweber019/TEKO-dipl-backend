@@ -10,6 +10,6 @@ script:
   - mv cf /usr/local/bin
   - cf --version
   - cf api $CF_API
-  - cf auth $CF_USER $CF_PWD
+  - cf auth $CF_USER $CF_PASSWORD
   - cf target -o sandbox -s TZHWEDA9
   - cf push
