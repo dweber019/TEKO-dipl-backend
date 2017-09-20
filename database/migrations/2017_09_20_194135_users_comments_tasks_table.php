@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSubjectsTable extends Migration
+class UsersCommentsTasksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,18 @@ class CreateSubjectsTable extends Migration
      */
     public function up()
     {
-        Schema::create('subjects', function (Blueprint $table) {
+        Schema::create('users_comments_tasks', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->boolean('archived')->default(false);
 
-            $table->unsignedInteger('teacher_id');
-            $table->foreign('teacher_id')->references('id')
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')->references('id')
               ->on('users')->onDelete('cascade');
+
+            $table->unsignedInteger('task_id');
+            $table->foreign('task_id')->references('id')
+              ->on('tasks')->onDelete('cascade');
+
+            $table->text('message');
 
             $table->timestamps();
         });
@@ -33,6 +37,6 @@ class CreateSubjectsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('subjects');
+        Schema::dropIfExists('users_comments_tasks');
     }
 }

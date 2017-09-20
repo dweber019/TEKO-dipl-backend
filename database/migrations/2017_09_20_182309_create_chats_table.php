@@ -17,6 +17,15 @@ class CreateChatsTable extends Migration
             $table->increments('id');
             $table->text('message');
             $table->boolean('read')->defaut(false);
+
+            $table->unsignedInteger('sender_id');
+            $table->foreign('sender_id')->references('id')
+              ->on('users')->onDelete('cascade');
+
+            $table->unsignedInteger('receiver_id');
+            $table->foreign('receiver_id')->references('id')
+              ->on('users')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
