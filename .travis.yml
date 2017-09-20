@@ -2,17 +2,15 @@ language: php
 php:
   - '7.1'
 
+env:
+  - DB_CONNECTION=sqlite_testing
+
 install:
   - composer self-update
   - composer install --no-interaction
 
 script:
   - vendor/bin/phpunit
-
-before_deploy:
-  - curl -L "https://cli.run.pivotal.io/stable?release=linux64-binary&version=6.26.0&source=github-rel" | tar -zx
-  - mv cf /usr/local/bin
-  - cf --version
 
 deploy:
   skip_cleanup: true
