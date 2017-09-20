@@ -1,14 +1,21 @@
 language: php
 php:
   - '7.1'
-before_script:
+
+install:
   - composer self-update
   - composer install --no-interaction
 
 script:
+  - vendor/bin/phpunit
+
+before_deploy:
   - curl -L "https://cli.run.pivotal.io/stable?release=linux64-binary&version=6.26.0&source=github-rel" | tar -zx
   - mv cf /usr/local/bin
   - cf --version
+
+deploy:
+  skip_cleanup: true
   - cf api $CF_API
   - cf auth $CF_USER $CF_PASSWORD
   - cf target -o sandbox -s TZHWEDA9
