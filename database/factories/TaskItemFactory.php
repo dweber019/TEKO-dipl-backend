@@ -6,7 +6,8 @@ $factory->define(App\TaskItem::class, function (Faker $faker) {
     return [
         'title' => $faker->name,
         'description' => $faker->text(),
-        'questions' => 'Ja;Nein',
+        'question_type' => $faker->randomElement(['toggle', 'select', 'file', 'input', 'text']),
+        'question' => 'Ja;Nein',
         'order' => $faker->numberBetween(0, 15),
     ];
 });

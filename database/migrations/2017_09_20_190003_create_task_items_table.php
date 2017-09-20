@@ -17,7 +17,8 @@ class CreateTaskItemsTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->text('questions')->nullable();
+            $table->enum('question_type', ['toggle', 'select', 'file', 'input', 'text']);
+            $table->text('question')->nullable();
             $table->integer('order');
             $table->timestamps();
         });
