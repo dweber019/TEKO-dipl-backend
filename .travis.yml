@@ -16,7 +16,9 @@ before_deploy:
 
 deploy:
   skip_cleanup: true
-  - cf api $CF_API
-  - cf auth $CF_USER $CF_PASSWORD
-  - cf target -o sandbox -s TZHWEDA9
-  - cf push
+  provider: cloudfoundry
+  username: $CF_USER
+  password: $CF_PASSWORD
+  api: $CF_API
+  organization: sandbox
+  space: TZHWEDA9
