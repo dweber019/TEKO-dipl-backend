@@ -20,3 +20,5 @@ deploy:
   api: $CF_API
   organization: sandbox
   space: TZHWEDA9
+  on:
+    branch: feature/travis
