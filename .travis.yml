@@ -1,0 +1,15 @@
+language: php
+php:
+  - '7.1'
+before_script:
+  - composer self-update
+  - composer install --no-interaction
+
+script:
+  - curl -L "https://cli.run.pivotal.io/stable?release=linux64-binary&version=6.26.0&source=github-rel" | tar -zx
+  - mv cf /usr/local/bin
+  - cf --version
+  - cf api $CF_API
+  - cf auth $CF_USER $CF_PWD
+  - cf target -o sandbox -s TZHWEDA9
+  - cf push
