@@ -1,5 +1,22 @@
 <?php
 
+$cfEnv = getenv('VCAP_SERVICES');
+if ($cfEnv !== false) {
+    try {
+        $vcapServices = json_decode(getenv('VCAP_SERVICES'));
+        $dynConnection = head($vcapServices->dynstrg)->credentials;
+
+        $_ENV['AWS_KEY'] = $dynConnection->accessKey;
+        $_ENV['AWS_SECRET'] = $dynConnection->sharedSecret;
+        $_ENV['AWS_REGION'] = 'eu-west-1';
+        $_ENV['AWS_BUCKET'] = 'backend';
+        $_ENV['AWS_ENDPOINT'] = 'https://' . $dynConnection->accessHost;
+    }
+    catch (Exception $e) {
+        dd($e->getMessage());
+    }
+}
+
 return [
 
     /*
@@ -57,10 +74,11 @@ return [
 
         's3' => [
             'driver' => 's3',
-            'key' => env('AWS_KEY'),
-            'secret' => env('AWS_SECRET'),
-            'region' => env('AWS_REGION'),
-            'bucket' => env('AWS_BUCKET'),
+            'key' => $_ENV['AWS_KEY'] ?? env('AWS_KEY'),
+            'secret' => $_ENV['AWS_SECRET'] ?? env('AWS_SECRET'),
+            'region' => $_ENV['AWS_REGION'] ?? env('AWS_REGION'),
+            'bucket' => $_ENV['AWS_BUCKET'] ?? env('AWS_BUCKET'),
+            'endpoint' => $_ENV['AWS_ENDPOINT'] ?? env('AWS_ENDPOINT'),
         ],
 
     ],
