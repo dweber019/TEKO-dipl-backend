@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,7 +28,7 @@ class Subject extends Model
      */
     public function users()
     {
-        return $this->belongsToMany('App\User')
+        return $this->belongsToMany('App\Models\User')
           ->withTimestamps();
     }
 
@@ -37,7 +37,7 @@ class Subject extends Model
      */
     public function userGrades()
     {
-        return $this->belongsToMany('App\User', 'grades')
+        return $this->belongsToMany('App\Models\User', 'grades')
           ->withPivot(['id', 'grade'])
           ->withTimestamps();
     }

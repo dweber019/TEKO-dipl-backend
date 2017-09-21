@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\TaskItem;
+use App\Models\TaskItem;
 use Illuminate\Http\Request;
 
 class TaskItemController extends Controller

@@ -2,7 +2,7 @@
 
 use Faker\Generator as Faker;
 
-$factory->define(App\Lesson::class, function (Faker $faker) {
+$factory->define(App\Models\Lesson::class, function (Faker $faker) {
     return [
         'start_date' => \Carbon\Carbon::now(),
         'end_date' => \Carbon\Carbon::now()->addHour(),
