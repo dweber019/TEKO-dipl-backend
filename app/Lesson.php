@@ -41,22 +41,18 @@ class Lesson extends Model
     }
 
     /**
-     * The user note that belong to the lesson.
+     * Get all of the lesson's notes.
      */
-    public function userNote()
+    public function notes()
     {
-        return $this->belongsToMany('App\User', 'users_notes_lessons')
-          ->withPivot(['note'])
-          ->withTimestamps();
+        return $this->morphMany('App\Note', 'noteable');
     }
 
     /**
-     * The user comments that belong to the lesson.
+     * Get all of the lesson's comments.
      */
-    public function userComments()
+    public function comments()
     {
-        return $this->belongsToMany('App\User', 'users_comments_lessons')
-          ->withPivot(['id', 'message'])
-          ->withTimestamps();
+        return $this->morphMany('App\Comment', 'commentable');
     }
 }

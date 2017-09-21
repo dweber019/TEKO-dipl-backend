@@ -66,23 +66,11 @@ class User extends Authenticatable
     }
 
     /**
-     * The lesson note that belong to the user.
+     * Get the notes for the user.
      */
-    public function lessonNote()
+    public function notes()
     {
-        return $this->belongsToMany('App\Lesson', 'users_notes_lessons')
-          ->withPivot(['note'])
-          ->withTimestamps();
-    }
-
-    /**
-     * The task note that belong to the user.
-     */
-    public function taskNote()
-    {
-        return $this->belongsToMany('App\Task', 'users_notes_tasks')
-          ->withPivot(['note'])
-          ->withTimestamps();
+        return $this->hasMany('App\Note');
     }
 
     /**
@@ -96,23 +84,11 @@ class User extends Authenticatable
     }
 
     /**
-     * The lesson comments that belong to the user.
+     * Get the comments for the user.
      */
-    public function lessonComments()
+    public function comments()
     {
-        return $this->belongsToMany('App\Lesson', 'users_comments_lessons')
-          ->withPivot(['id', 'message'])
-          ->withTimestamps();
-    }
-
-    /**
-     * The task comments that belong to the user.
-     */
-    public function taskComments()
-    {
-        return $this->belongsToMany('App\Task', 'users_comments_tasks')
-          ->withPivot(['id', 'message'])
-          ->withTimestamps();
+        return $this->hasMany('App\Comment');
     }
 
     /**

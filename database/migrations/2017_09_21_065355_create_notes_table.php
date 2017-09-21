@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UsersCommentsTasksTable extends Migration
+class CreateNotesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,17 @@ class UsersCommentsTasksTable extends Migration
      */
     public function up()
     {
-        Schema::create('users_comments_tasks', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('notes', function (Blueprint $table) {
+            $table->text('note');
 
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')
               ->on('users')->onDelete('cascade');
 
-            $table->unsignedInteger('task_id');
-            $table->foreign('task_id')->references('id')
-              ->on('tasks')->onDelete('cascade');
+            $table->unsignedInteger('noteable_id');
+            $table->string('noteable_type');
 
-            $table->text('message');
+            $table->primary(['user_id', 'noteable_id', 'noteable_type']);
 
             $table->timestamps();
         });
@@ -37,6 +36,6 @@ class UsersCommentsTasksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_comments_tasks');
+        Schema::dropIfExists('notes');
     }
 }

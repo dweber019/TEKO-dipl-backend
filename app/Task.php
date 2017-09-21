@@ -51,22 +51,18 @@ class Task extends Model
     }
 
     /**
-     * The user note that belong to the task.
+     * Get all of the task's notes.
      */
-    public function userkNote()
+    public function notes()
     {
-        return $this->belongsToMany('App\User', 'users_notes_tasks')
-          ->withPivot(['note'])
-          ->withTimestamps();
+        return $this->morphMany('App\Note', 'noteable');
     }
 
     /**
-     * The user comments that belong to the task.
+     * Get all of the task's comments.
      */
-    public function userComments()
+    public function comments()
     {
-        return $this->belongsToMany('App\User', 'users_comments_tasks')
-          ->withPivot(['id', 'message'])
-          ->withTimestamps();
+        return $this->morphMany('App\Comment', 'commentable');
     }
 }
