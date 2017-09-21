@@ -14,4 +14,14 @@ class Notification extends Model
     protected $fillable = [
       'message', 'ref_id', 'ref',
     ];
+
+    /**
+     * The users that belong to the notification.
+     */
+    public function users()
+    {
+        return $this->belongsToMany('App\User')
+          ->withPivot(['id', 'read'])
+          ->withTimestamps();
+    }
 }

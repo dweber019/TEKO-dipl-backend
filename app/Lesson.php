@@ -23,4 +23,40 @@ class Lesson extends Model
     protected $fillable = [
       'start_date', 'end_date', 'location', 'room', 'canceled',
     ];
+
+    /**
+     * Get the subject that owns the lesson.
+     */
+    public function subject()
+    {
+        return $this->belongsTo('App\Subject');
+    }
+
+    /**
+     * Get the tasks for the lesson.
+     */
+    public function tasks()
+    {
+        return $this->hasMany('App\Task');
+    }
+
+    /**
+     * The user note that belong to the lesson.
+     */
+    public function userNote()
+    {
+        return $this->belongsToMany('App\User', 'users_notes_lessons')
+          ->withPivot(['note'])
+          ->withTimestamps();
+    }
+
+    /**
+     * The user comments that belong to the lesson.
+     */
+    public function userComments()
+    {
+        return $this->belongsToMany('App\User', 'users_comments_lessons')
+          ->withPivot(['id', 'message'])
+          ->withTimestamps();
+    }
 }

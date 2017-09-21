@@ -14,4 +14,31 @@ class Subject extends Model
     protected $fillable = [
       'name', 'archived',
     ];
+
+    /**
+     * Get the lessons for the subject.
+     */
+    public function lessons()
+    {
+        return $this->hasMany('App\Lesson');
+    }
+
+    /**
+     * The users that belong to the subject.
+     */
+    public function users()
+    {
+        return $this->belongsToMany('App\User')
+          ->withTimestamps();
+    }
+
+    /**
+     * The user grades that belong to the subject.
+     */
+    public function userGrades()
+    {
+        return $this->belongsToMany('App\User', 'grades')
+          ->withPivot(['id', 'grade'])
+          ->withTimestamps();
+    }
 }

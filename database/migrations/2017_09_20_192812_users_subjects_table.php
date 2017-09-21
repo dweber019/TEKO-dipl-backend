@@ -13,7 +13,7 @@ class UsersSubjectsTable extends Migration
      */
     public function up()
     {
-        Schema::create('users_subjects', function (Blueprint $table) {
+        Schema::create('subject_user', function (Blueprint $table) {
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')
               ->on('users')->onDelete('cascade');

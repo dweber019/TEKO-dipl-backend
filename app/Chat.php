@@ -12,6 +12,23 @@ class Chat extends Model
      * @var array
      */
     protected $fillable = [
-      'message', 'read',
+      'message', 'read', 'sender_id', 'receiver_id',
     ];
+
+    /**
+     * Get the user (sender) that owns the chat.
+     */
+    public function sender()
+    {
+        return $this->belongsTo('App\User');
+    }
+
+    /**
+     * Get the user (receiver) that owns the chat.
+     */
+    public function receiver()
+    {
+        return $this->belongsTo('App\User');
+    }
+
 }

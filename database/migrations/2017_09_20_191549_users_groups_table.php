@@ -13,7 +13,7 @@ class UsersGroupsTable extends Migration
      */
     public function up()
     {
-        Schema::create('users_groups', function (Blueprint $table) {
+        Schema::create('group_user', function (Blueprint $table) {
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')
               ->on('users')->onDelete('cascade');
