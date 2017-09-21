@@ -17,7 +17,7 @@ class CreateTasksTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->text('description')->nullable();
-            $table->dateTime('due_date');
+            $table->dateTime('due_date')->nullable();
 
             $table->unsignedInteger('lesson_id');
             $table->foreign('lesson_id')->references('id')

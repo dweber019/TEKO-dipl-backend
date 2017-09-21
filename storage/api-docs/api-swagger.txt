@@ -1039,6 +1039,9 @@
             "required": true,
             "schema": {
               "type": "object",
+              "required": [
+                "grade"
+              ],
               "properties": {
                 "grade": {
                   "type": "number",
@@ -2151,6 +2154,9 @@
         },
         {
           "type": "object",
+          "required": [
+            "invite_email"
+          ],
           "properties": {
             "invite_email": {
               "type": "string"
@@ -2177,6 +2183,9 @@
     },
     "GroupPut": {
       "type": "object",
+      "required": [
+        "name"
+      ],
       "properties": {
         "name": {
           "type": "string"
@@ -2208,6 +2217,11 @@
     },
     "ChatPut": {
       "type": "object",
+      "required": [
+        "sender_id",
+        "receiver_id",
+        "message"
+      ],
       "properties": {
         "sender_id": {
           "type": "integer"
@@ -2237,12 +2251,18 @@
     },
     "SubjectPut": {
       "type": "object",
+      "required": [
+        "name",
+        "archived",
+        "teacherId"
+      ],
       "properties": {
         "name": {
           "type": "string"
         },
         "archived": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": false
         },
         "teacherId": {
           "type": "integer"
@@ -2353,6 +2373,11 @@
     },
     "LessonPut": {
       "type": "object",
+      "required": [
+        "startDate",
+        "endDate",
+        "canceled"
+      ],
       "properties": {
         "startDate": {
           "type": "string",
@@ -2369,7 +2394,8 @@
           "type": "string"
         },
         "canceled": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": false
         },
         "subjectId": {
           "type": "integer"
@@ -2390,6 +2416,9 @@
     },
     "NotePut": {
       "type": "object",
+      "required": [
+        "note"
+      ],
       "properties": {
         "note": {
           "type": "string"
@@ -2421,6 +2450,9 @@
     },
     "CommentPut": {
       "type": "object",
+      "required": [
+        "message"
+      ],
       "properties": {
         "message": {
           "type": "string"
@@ -2452,6 +2484,9 @@
     },
     "TaskPut": {
       "type": "object",
+      "required": [
+        "name"
+      ],
       "properties": {
         "name": {
           "type": "string"
@@ -2490,6 +2525,11 @@
     },
     "TaskItemPut": {
       "type": "object",
+      "required": [
+        "title",
+        "question_type",
+        "order"
+      ],
       "properties": {
         "title": {
           "type": "string"
@@ -2540,6 +2580,9 @@
     },
     "TaskItemWorkPut": {
       "type": "object",
+      "required": [
+        "result"
+      ],
       "properties": {
         "result": {
           "type": "string"
