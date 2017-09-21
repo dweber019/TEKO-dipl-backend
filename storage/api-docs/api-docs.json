@@ -1,0 +1,26 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the API for the EasyLearn app. It's a projekt done for TEKO Olten.\n\nChange the host to to 127.0.0.1:8000 to target the local development environment and dipl-backend.scapp.io to target the production system.\n",
+    "version": "1.0.0",
+    "title": "EasyLearn API",
+    "contact": {
+      "email": "david.weber@edu.teko.ch"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "127.0.0.1:8000",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "test"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ]
+}
