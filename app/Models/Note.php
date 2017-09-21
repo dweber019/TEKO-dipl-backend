@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
+use App\Traits\HasCompositePrimaryKey;
 use Illuminate\Database\Eloquent\Model;
 
 class Note extends Model
 {
+    use HasCompositePrimaryKey;
+
     /**
-     * Indicates if the IDs are auto-incrementing.
+     * The primary key of the table.
      *
-     * @var bool
+     * @var array
      */
-    public $incrementing = false;
+    protected $primaryKey = ['user_id', 'noteable_id', 'noteable_type'];
 
     /**
      * The attributes that are mass assignable.
