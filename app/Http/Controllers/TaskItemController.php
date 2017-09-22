@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\TaskItem;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Symfony\Component\HttpFoundation\Response;
 
 class TaskItemController extends Controller
 {
@@ -16,7 +18,20 @@ class TaskItemController extends Controller
      */
     public function update(Request $request, TaskItem $taskItem)
     {
-        //
+        $attributes = $request->validate([
+          'title' => 'required|string',
+          'description' => 'string|nullable',
+          'question_type' => [
+            'required',
+            Rule::in(['toggle', 'select', 'file', 'input', 'text']),
+          ],
+          'question' => 'string|nullable',
+          'order' => 'integer',
+        ]);
+
+        $taskItem = tap($taskItem->fill($attributes))->save();
+
+        return $taskItem;
     }
 
     /**
@@ -27,7 +42,8 @@ class TaskItemController extends Controller
      */
     public function destroy(TaskItem $taskItem)
     {
-        //
+        $taskItem->delete();
+        return response('', Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -38,7 +54,7 @@ class TaskItemController extends Controller
      */
     public function workIndex(TaskItem $taskItem)
     {
-        //
+        // TODO: Need user context
     }
 
     /**
@@ -50,6 +66,6 @@ class TaskItemController extends Controller
      */
     public function workUpdate(Request $request, TaskItem $taskItem)
     {
-        //
+        // TODO: Need user context
     }
 }

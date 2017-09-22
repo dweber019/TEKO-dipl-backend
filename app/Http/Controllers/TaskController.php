@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\TaskItem;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Symfony\Component\HttpFoundation\Response;
 
 class TaskController extends Controller
 {
@@ -14,7 +17,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+        return Task::all();
     }
 
     /**
@@ -25,7 +28,7 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        //
+        return $task;
     }
 
     /**
@@ -37,7 +40,15 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        //
+        $attributes = $request->validate([
+          'name' => 'required|string',
+          'description' => 'string|nullable',
+          'due_date' => 'required|date|after:now',
+        ]);
+
+        $task = tap($task->fill($attributes))->save();
+
+        return $task;
     }
 
     /**
@@ -48,7 +59,8 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $task->delete();
+        return response('', Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -59,7 +71,7 @@ class TaskController extends Controller
      */
     public function taskItemsIndex(Task $lesson)
     {
-        //
+        return $lesson->taskItems()->get();
     }
 
     /**
@@ -71,7 +83,22 @@ class TaskController extends Controller
      */
     public function taskItemsStore(Request $request, Task $task)
     {
-        //
+        $attributes = $request->validate([
+          'title' => 'required|string',
+          'description' => 'string|nullable',
+          'question_type' => [
+            'required',
+            Rule::in(['toggle', 'select', 'file', 'input', 'text']),
+          ],
+          'question' => 'string|nullable',
+          'order' => 'integer',
+        ]);
+
+        $attributes['task_id'] = $task->id;
+
+        $taskItem = tap(new TaskItem($attributes))->save();
+
+        return $taskItem;
     }
 
     /**
@@ -82,7 +109,7 @@ class TaskController extends Controller
      */
     public function noteIndex(Task $task)
     {
-        //
+        // TODO: Need user context
     }
 
     /**
@@ -94,7 +121,7 @@ class TaskController extends Controller
      */
     public function noteUpdate(Request $request, Task $task)
     {
-        //
+        // TODO: Need user context
     }
 
     /**
@@ -105,7 +132,7 @@ class TaskController extends Controller
      */
     public function commentsIndex(Task $task)
     {
-        //
+        // TODO: Need user context
     }
 
     /**
@@ -117,7 +144,7 @@ class TaskController extends Controller
      */
     public function commentsStore(Request $request, Task $task)
     {
-        //
+        // TODO: Need user context
     }
 
     /**
@@ -129,6 +156,6 @@ class TaskController extends Controller
      */
     public function doneUpdate(Request $request, Task $task)
     {
-        //
+        // TODO: Need user context
     }
 }
