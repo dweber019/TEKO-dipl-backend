@@ -29,7 +29,7 @@ class Lesson extends Model
      */
     public function subject()
     {
-        return $this->belongsTo('App\Subject');
+        return $this->belongsTo('App\Models\Subject');
     }
 
     /**
@@ -37,7 +37,7 @@ class Lesson extends Model
      */
     public function tasks()
     {
-        return $this->hasMany('App\Task');
+        return $this->hasMany('App\Models\Task');
     }
 
     /**
@@ -45,7 +45,7 @@ class Lesson extends Model
      */
     public function notes()
     {
-        return $this->morphMany('App\Note', 'noteable');
+        return $this->morphMany('App\Models\Note', 'noteable');
     }
 
     /**
@@ -53,6 +53,6 @@ class Lesson extends Model
      */
     public function comments()
     {
-        return $this->morphMany('App\Comment', 'commentable');
+        return $this->morphMany('App\Models\Comment', 'commentable');
     }
 }

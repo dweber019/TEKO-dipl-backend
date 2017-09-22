@@ -14,6 +14,7 @@ class CreateNotesTable extends Migration
     public function up()
     {
         Schema::create('notes', function (Blueprint $table) {
+            $table->increments('id');
             $table->text('note');
 
             $table->unsignedInteger('user_id');
@@ -22,8 +23,6 @@ class CreateNotesTable extends Migration
 
             $table->unsignedInteger('noteable_id');
             $table->string('noteable_type');
-
-            $table->primary(['user_id', 'noteable_id', 'noteable_type']);
 
             $table->timestamps();
         });

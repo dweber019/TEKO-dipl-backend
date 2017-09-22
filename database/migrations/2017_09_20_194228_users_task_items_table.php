@@ -37,6 +37,6 @@ class UsersTaskItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_task_items');
+        Schema::dropIfExists('task_item_user');
     }
 }

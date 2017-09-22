@@ -29,7 +29,7 @@ class Task extends Model
      */
     public function lesson()
     {
-        return $this->belongsTo('App\Lesson');
+        return $this->belongsTo('App\Models\Lesson');
     }
 
     /**
@@ -37,7 +37,7 @@ class Task extends Model
      */
     public function taskItems()
     {
-        return $this->hasMany('App\TaskItem');
+        return $this->hasMany('App\Models\TaskItem');
     }
 
     /**
@@ -55,7 +55,7 @@ class Task extends Model
      */
     public function notes()
     {
-        return $this->morphMany('App\Note', 'noteable');
+        return $this->morphMany('App\Models\Note', 'noteable');
     }
 
     /**
@@ -63,6 +63,6 @@ class Task extends Model
      */
     public function comments()
     {
-        return $this->morphMany('App\Comment', 'commentable');
+        return $this->morphMany('App\Models\Comment', 'commentable');
     }
 }

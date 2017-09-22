@@ -7,15 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Note extends Model
 {
-    use HasCompositePrimaryKey;
-
-    /**
-     * The primary key of the table.
-     *
-     * @var array
-     */
-    protected $primaryKey = ['user_id', 'noteable_id', 'noteable_type'];
-
     /**
      * The attributes that are mass assignable.
      *

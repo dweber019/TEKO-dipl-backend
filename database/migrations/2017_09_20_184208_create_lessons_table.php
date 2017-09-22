@@ -18,7 +18,7 @@ class CreateLessonsTable extends Migration
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->string('location')->nullable();
-            $table->string('map')->nullable();
+            $table->string('room')->nullable();
             $table->boolean('canceled')->default(false);
 
             $table->unsignedInteger('subject_id');

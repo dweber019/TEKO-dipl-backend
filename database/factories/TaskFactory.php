@@ -7,5 +7,6 @@ $factory->define(App\Models\Task::class, function (Faker $faker) {
         'name' => $faker->name,
         'description' => $faker->text(),
         'due_date' => \Carbon\Carbon::now()->addDays(3),
+        'lesson_id' => null,
     ];
 });

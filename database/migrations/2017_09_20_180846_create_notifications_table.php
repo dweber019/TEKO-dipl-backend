@@ -18,6 +18,15 @@ class CreateNotificationsTable extends Migration
             $table->text('message');
             $table->integer('ref_id')->nullable();
             $table->string('ref')->nullable();
+
+            /**
+             * - Student added to subject => subject
+             * - new Grade for student => grade
+             * - new Comment in Lesson => lesson.comments
+             * - new comment in Task => task.comments
+             * - New Task => lesson
+             */
+
             $table->timestamps();
         });
     }

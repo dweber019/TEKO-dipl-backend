@@ -9,5 +9,6 @@ $factory->define(App\Models\Lesson::class, function (Faker $faker) {
         'location' => 'Hofstetterstrasse 7, 4054 Basel',
         'room' => 'R308',
         'canceled' => false,
+        'subject_id' => null,
     ];
 });

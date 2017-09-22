@@ -9,5 +9,6 @@ $factory->define(App\Models\TaskItem::class, function (Faker $faker) {
         'question_type' => $faker->randomElement(['toggle', 'select', 'file', 'input', 'text']),
         'question' => 'Ja;Nein',
         'order' => $faker->numberBetween(0, 15),
+        'task_id' => null,
     ];
 });

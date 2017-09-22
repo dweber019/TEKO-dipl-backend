@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'firstname', 'lastname', 'auth0_id', 'invite_token', 'invite_email',
+        'firstname', 'lastname', 'auth0_id', 'invite_token', 'invite_email', 'type',
     ];
 
     /**
@@ -32,7 +32,7 @@ class User extends Authenticatable
      */
     public function groups()
     {
-        return $this->belongsToMany('App\Group')
+        return $this->belongsToMany('App\Models\Group')
           ->withTimestamps();
     }
 
@@ -41,7 +41,7 @@ class User extends Authenticatable
      */
     public function subjects()
     {
-        return $this->belongsToMany('App\Subject')
+        return $this->belongsToMany('App\Models\Subject')
           ->withTimestamps();
     }
 
@@ -50,7 +50,7 @@ class User extends Authenticatable
      */
     public function tasks()
     {
-        return $this->belongsToMany('App\Task')
+        return $this->belongsToMany('App\Models\Task')
           ->withPivot(['done'])
           ->withTimestamps();
     }
@@ -60,7 +60,7 @@ class User extends Authenticatable
      */
     public function taskItems()
     {
-        return $this->belongsToMany('App\TaskItem')
+        return $this->belongsToMany('App\Models\TaskItem')
           ->withPivot(['result'])
           ->withTimestamps();
     }
@@ -70,7 +70,7 @@ class User extends Authenticatable
      */
     public function notes()
     {
-        return $this->hasMany('App\Note');
+        return $this->hasMany('App\Models\Note');
     }
 
     /**
@@ -78,7 +78,7 @@ class User extends Authenticatable
      */
     public function grades()
     {
-        return $this->belongsToMany('App\Subject', 'grades')
+        return $this->belongsToMany('App\Models\Subject', 'grades')
           ->withPivot(['id', 'grade'])
           ->withTimestamps();
     }
@@ -88,7 +88,7 @@ class User extends Authenticatable
      */
     public function comments()
     {
-        return $this->hasMany('App\Comment');
+        return $this->hasMany('App\Models\Comment');
     }
 
     /**
@@ -96,7 +96,7 @@ class User extends Authenticatable
      */
     public function notifications()
     {
-        return $this->belongsToMany('App\Notification')
+        return $this->belongsToMany('App\Models\Notification')
           ->withPivot(['id', 'read'])
           ->withTimestamps();
     }
@@ -106,7 +106,7 @@ class User extends Authenticatable
      */
     public function senderChat()
     {
-        return $this->hasMany('App\Chat', 'sender_id');
+        return $this->hasMany('App\Models\Chat', 'sender_id');
     }
 
     /**
@@ -114,6 +114,6 @@ class User extends Authenticatable
      */
     public function receiverChat()
     {
-        return $this->hasMany('App\Chat', 'receiver_id');
+        return $this->hasMany('App\Models\Chat', 'receiver_id');
     }
 }

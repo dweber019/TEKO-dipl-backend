@@ -35,6 +35,6 @@ class UsersNotificationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_notifications');
+        Schema::dropIfExists('notification_user');
     }
 }
