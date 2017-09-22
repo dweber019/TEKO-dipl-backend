@@ -17,6 +17,7 @@ class CreateLessonsTable extends Migration
             $table->increments('id');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
+            $table->enum('type', ['lesson', 'exam', 'reminder'])->default('lesson');
             $table->string('location')->nullable();
             $table->string('room')->nullable();
             $table->boolean('canceled')->default(false);

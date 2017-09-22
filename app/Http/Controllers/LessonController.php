@@ -7,6 +7,7 @@ use App\Models\Lesson;
 use App\Models\Note;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class LessonController extends Controller
@@ -44,6 +45,10 @@ class LessonController extends Controller
         $attributes = $request->validate([
           'start_date' => 'required|date|after:now',
           'end_date' => 'required|date|after:start_date',
+          'type' => [
+            'required',
+            Rule::in(['lesson', 'exam', 'reminder']),
+          ],
           'location' => 'string|nullable',
           'room' => 'string|nullable',
           'canceled' => 'required|boolean',
