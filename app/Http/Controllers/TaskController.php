@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
+use App\Models\Note;
 use App\Models\Task;
 use App\Models\TaskItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -104,12 +107,15 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function noteIndex(Task $task)
+    public function noteIndex(Request $request, Task $task)
     {
-        // TODO: Need user context
+        $currentUser = $request->user();
+        $note = $task->notes()->where('user_id', $currentUser->id)->first();
+        return $note;
     }
 
     /**
@@ -121,7 +127,21 @@ class TaskController extends Controller
      */
     public function noteUpdate(Request $request, Task $task)
     {
-        // TODO: Need user context
+        $attributes = $request->validate([
+          'note' => 'required|string',
+        ]);
+
+        $currentUser = $request->user();
+        $note = $task->notes()->where('user_id', $currentUser->id)->first();
+
+        if ($note === null) {
+            $note = new Note($attributes);
+            $task->notes()->save($note);
+        } else {
+            $note = tap($note->fill($attributes))->update();
+        }
+
+        return $note;
     }
 
     /**
@@ -132,7 +152,7 @@ class TaskController extends Controller
      */
     public function commentsIndex(Task $task)
     {
-        // TODO: Need user context
+        return $task->comments()->get();
     }
 
     /**
@@ -144,7 +164,16 @@ class TaskController extends Controller
      */
     public function commentsStore(Request $request, Task $task)
     {
-        // TODO: Need user context
+        $attributes = $request->validate([
+          'message' => 'required|string',
+        ]);
+
+        $attributes['user_id'] = $request->user()->id;
+
+        $comment = new Comment($attributes);
+        $task->comments()->save($comment);
+
+        return $comment;
     }
 
     /**
@@ -156,6 +185,10 @@ class TaskController extends Controller
      */
     public function doneUpdate(Request $request, Task $task)
     {
-        // TODO: Need user context
+        $currentUser = $request->user();
+
+        $task->users()->attach($currentUser->id, [ 'done' => true ]);
+
+        return response('', Response::HTTP_OK);
     }
 }

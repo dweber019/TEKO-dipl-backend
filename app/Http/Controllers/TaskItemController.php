@@ -49,12 +49,17 @@ class TaskItemController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\TaskItem  $taskItem
      * @return \Illuminate\Http\Response
      */
-    public function workIndex(TaskItem $taskItem)
+    public function workIndex(Request $request, TaskItem $taskItem)
     {
-        // TODO: Need user context
+        $currentUser = $request->user();
+
+        $work = $taskItem->users()->where('user_id', $currentUser->id)->first();
+
+        return $work;
     }
 
     /**
@@ -66,6 +71,15 @@ class TaskItemController extends Controller
      */
     public function workUpdate(Request $request, TaskItem $taskItem)
     {
-        // TODO: Need user context
+        $attributes = $request->validate([
+          'result' => 'required|string'
+        ]);
+
+        $currentUser = $request->user();
+
+        $taskItem->users()->attach($currentUser->id, $attributes);
+        $work = $taskItem->users()->where('user_id', $currentUser->id)->first();
+
+        return $work;
     }
 }

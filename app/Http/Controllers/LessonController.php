@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Lesson;
+use App\Models\Note;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -100,12 +102,15 @@ class LessonController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Lesson  $lesson
      * @return \Illuminate\Http\Response
      */
-    public function noteIndex(Lesson $lesson)
+    public function noteIndex(Request $request, Lesson $lesson)
     {
-        // TODO: Need user context
+        $currentUser = $request->user();
+        $note = $lesson->notes()->where('user_id', $currentUser->id)->first();
+        return $note;
     }
 
     /**
@@ -117,7 +122,21 @@ class LessonController extends Controller
      */
     public function noteUpdate(Request $request, Lesson $lesson)
     {
-        // TODO: Need user context
+        $attributes = $request->validate([
+          'note' => 'required|string',
+        ]);
+
+        $currentUser = $request->user();
+        $note = $lesson->notes()->where('user_id', $currentUser->id)->first();
+
+        if ($note === null) {
+            $note = tap(new Note($attributes))->save();
+            $lesson->notes()->save($note);
+        } else {
+            $note = tap($note->fill($attributes))->update();
+        }
+
+        return $note;
     }
 
     /**
@@ -128,7 +147,7 @@ class LessonController extends Controller
      */
     public function commentsIndex(Lesson $lesson)
     {
-        // TODO: Need user context
+        return $lesson->comments()->get();
     }
 
     /**
@@ -140,7 +159,16 @@ class LessonController extends Controller
      */
     public function commentsStore(Request $request, Lesson $lesson)
     {
-        // TODO: Need user context
+        $attributes = $request->validate([
+          'message' => 'required|string',
+        ]);
+
+        $attributes['user_id'] = $request->user()->id;
+
+        $comment = new Comment($attributes);
+        $lesson->comments()->save($comment);
+
+        return $comment;
     }
 
 
