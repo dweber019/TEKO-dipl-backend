@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('lastname')->nullable();
             $table->string('auth0_id')->nullable();
             $table->string('invite_token');
+            $table->string('invite_email');
 //            $table->string('email')->unique();
 //            $table->string('password');
 //            $table->rememberToken();
