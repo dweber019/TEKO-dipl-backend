@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class SubjectController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +14,7 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        //
+        return User::all();
     }
 
     /**
@@ -32,10 +31,10 @@ class SubjectController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Subject  $subject
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(Subject $subject)
+    public function show(User $user)
     {
         //
     }
@@ -44,10 +43,10 @@ class SubjectController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Subject  $subject
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Subject $subject)
+    public function update(Request $request, User $user)
     {
         //
     }
@@ -55,21 +54,76 @@ class SubjectController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Subject  $subject
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Subject $subject)
+    public function destroy(User $user)
     {
         //
     }
 
     /**
-     * Display the specified resource.
+     * Display the groups of the specified resource.
      *
-     * @param  \App\Models\Subject  $subject
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function lessonsIndex(Subject $subject)
+    public function groupsIndex(User $user)
+    {
+        //
+    }
+
+    /**
+     * Display the subjects of the specified resource.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function subjectsIndex(User $user)
+    {
+        //
+    }
+
+    /**
+     * Display the notifications of the specified resource.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function notificationsIndex(User $user)
+    {
+        //
+    }
+
+    /**
+     * Display the grades of the specified resource.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function gradesIndex(User $user)
+    {
+        //
+    }
+
+    /**
+     * Display the agenda of the specified resource.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function agendaIndex(User $user)
+    {
+        //
+    }
+
+    /**
+     * Display the chats of the specified resource.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function chatsIndex(User $user)
     {
         //
     }
@@ -78,34 +132,10 @@ class SubjectController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Subject  $subject
-     * @return \Illuminate\Http\Response
-     */
-    public function lessonsStore(Request $request, Subject $subject)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Subject  $subject
-     * @return \Illuminate\Http\Response
-     */
-    public function gradesIndex(Subject $subject)
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Subject  $subject
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function gradesStore(Request $request, Subject $subject, User $user)
+    public function chatsStore(Request $request, User $user)
     {
         //
     }
@@ -113,48 +143,24 @@ class SubjectController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Subject  $subject
      * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $user2
      * @return \Illuminate\Http\Response
      */
-    public function gradesDestroy(Subject $subject, User $user)
+    public function chatsDestroy(User $user, User $user2)
     {
         //
     }
 
     /**
-     * Display the specified resource.
+     * Display the chats of the specified resource.
      *
-     * @param  \App\Models\Subject  $subject
+     * @param  String  $token
      * @return \Illuminate\Http\Response
      */
-    public function usersIndex(Subject $subject)
+    public function feedIndex(String $token)
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Subject  $subject
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function usersStore(Request $request, Subject $subject, User $user)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Subject  $subject
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function usersDestroy(Subject $subject, User $user)
-    {
-        //
-    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -13,16 +14,6 @@ class GroupController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
     {
         //
     }
@@ -41,7 +32,7 @@ class GroupController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Group  $group
+     * @param  \App\Models\Group  $group
      * @return \Illuminate\Http\Response
      */
     public function show(Group $group)
@@ -50,21 +41,10 @@ class GroupController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Group  $group
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Group $group)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Group  $group
+     * @param  \App\Models\Group  $group
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Group $group)
@@ -75,10 +55,45 @@ class GroupController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Group  $group
+     * @param  \App\Models\Group  $group
      * @return \Illuminate\Http\Response
      */
     public function destroy(Group $group)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Group  $group
+     * @return \Illuminate\Http\Response
+     */
+    public function usersIndex(Group $group)
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Models\Group  $group
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function usersStore(Group $group, User $user)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Group  $group
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function usersDestroy(Group $group, User $user)
     {
         //
     }

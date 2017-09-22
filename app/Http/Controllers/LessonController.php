@@ -18,30 +18,9 @@ class LessonController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
-     * @param  \App\Lesson  $lesson
+     * @param  \App\Models\Lesson  $lesson
      * @return \Illuminate\Http\Response
      */
     public function show(Lesson $lesson)
@@ -50,21 +29,10 @@ class LessonController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Lesson  $lesson
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Lesson $lesson)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Lesson  $lesson
+     * @param  \App\Models\Lesson  $lesson
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Lesson $lesson)
@@ -75,11 +43,82 @@ class LessonController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Lesson  $lesson
+     * @param  \App\Models\Lesson  $lesson
      * @return \Illuminate\Http\Response
      */
     public function destroy(Lesson $lesson)
     {
         //
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Lesson  $lesson
+     * @return \Illuminate\Http\Response
+     */
+    public function tasksIndex(Lesson $lesson)
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Lesson  $lesson
+     * @return \Illuminate\Http\Response
+     */
+    public function tasksStore(Request $request, Lesson $lesson)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Lesson  $lesson
+     * @return \Illuminate\Http\Response
+     */
+    public function noteIndex(Lesson $lesson)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Lesson  $lesson
+     * @return \Illuminate\Http\Response
+     */
+    public function noteUpdate(Request $request, Lesson $lesson)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Lesson  $lesson
+     * @return \Illuminate\Http\Response
+     */
+    public function commentsIndex(Lesson $lesson)
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Lesson  $lesson
+     * @return \Illuminate\Http\Response
+     */
+    public function commentsStore(Request $request, Lesson $lesson)
+    {
+        //
+    }
+
+
 }
