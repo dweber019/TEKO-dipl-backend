@@ -18,7 +18,6 @@ use Illuminate\Http\Request;
  * User related routes
  */
 Route::prefix('users')->group(function () {
-
     Route::get('{user}/groups', 'UserController@groupsIndex');
 
     Route::get('{user}/subjects', 'UserController@subjectsIndex');
@@ -32,12 +31,10 @@ Route::prefix('users')->group(function () {
     Route::get('{user}/chats', 'UserController@chatsIndex');
     Route::post('{user}/chats', 'UserController@chatsStore');
     Route::delete('{user}/chats/{user2}', 'UserController@chatsDestroy');
-
-    Route::resource('', 'UserController', ['except' => [
-      'create', 'edit'
-    ]]);
-
 });
+Route::resource('users', 'UserController', ['except' => [
+  'create', 'edit'
+]]);
 
 /*
  * Feed
@@ -48,22 +45,20 @@ Route::get('feed/{token}', 'UserController@feedIndex');
  * Group related routes
  */
 Route::prefix('groups')->group(function () {
-
     Route::get('{group}/users', 'GroupController@usersIndex');
     Route::post('{group}/users/{user}', 'GroupController@usersStore');
     Route::delete('{group}/users/{user}', 'GroupController@usersDestroy');
 
-    Route::resource('', 'GroupController', ['except' => [
-      'create', 'edit'
-    ]]);
-
+    Route::get('{group}', 'GroupController@show');
 });
+Route::resource('groups', 'GroupController', ['except' => [
+  'create', 'edit'
+]]);
 
 /*
  * Subject related routes
  */
 Route::prefix('subjects')->group(function () {
-
     Route::get('{subject}/lessons', 'SubjectController@lessonsIndex');
     Route::post('{subject}/lessons', 'SubjectController@lessonsStore');
 
@@ -74,18 +69,15 @@ Route::prefix('subjects')->group(function () {
     Route::get('{subject}/users', 'SubjectController@usersIndex');
     Route::post('{subject}/users/{user}', 'SubjectController@usersStore');
     Route::delete('{subject}/users/{user}', 'SubjectController@usersDestroy');
-
-    Route::resource('', 'SubjectController', ['except' => [
-      'create', 'edit'
-    ]]);
-
 });
+Route::resource('subjects', 'SubjectController', ['except' => [
+  'create', 'edit'
+]]);
 
 /*
  * Lessons related routes
  */
 Route::prefix('lessons')->group(function () {
-
     Route::get('{lesson}/tasks', 'LessonController@tasksIndex');
     Route::post('{lesson}/tasks', 'LessonController@tasksStore');
 
@@ -94,18 +86,15 @@ Route::prefix('lessons')->group(function () {
 
     Route::get('{lesson}/comments', 'LessonController@commentsIndex');
     Route::post('{lesson}/comments', 'LessonController@commentsStore');
-
-    Route::resource('', 'LessonController', ['except' => [
-      'create', 'edit', 'store'
-    ]]);
-
 });
+Route::resource('lessons', 'LessonController', ['except' => [
+  'create', 'edit', 'store'
+]]);
 
 /*
  * Tasks related routes
  */
 Route::prefix('tasks')->group(function () {
-
     Route::get('{task}/taskitems', 'TaskController@taskItemsIndex');
     Route::post('{task}/taskitems', 'TaskController@taskItemsStore');
 
@@ -116,34 +105,25 @@ Route::prefix('tasks')->group(function () {
     Route::post('{task}/comments', 'TaskController@commentsStore');
 
     Route::put('{task}/done', 'TaskController@doneUpdate');
-
-    Route::resource('', 'TaskController', ['except' => [
-      'create', 'edit', 'store'
-    ]]);
-
 });
+Route::resource('tasks', 'TaskController', ['except' => [
+  'create', 'edit', 'store'
+]]);
 
 /*
  * Task Items related routes
  */
 Route::prefix('taskitems')->group(function () {
-
     Route::get('{taskitem}/work', 'TaskItemController@workIndex');
     Route::put('{taskitem}/work', 'TaskItemController@workUpdate');
-
-    Route::resource('', 'TaskItemController', ['except' => [
-      'create', 'edit', 'store', 'index', 'show'
-    ]]);
-
 });
+Route::resource('taskitems', 'TaskItemController', ['except' => [
+  'create', 'edit', 'store', 'index', 'show'
+]]);
 
 /*
  * Comments related routes
  */
-Route::prefix('comments')->group(function () {
-
-    Route::resource('', 'CommentsController', ['except' => [
-      'create', 'edit', 'store', 'index', 'show'
-    ]]);
-
-});
+Route::resource('comments', 'CommentsController', ['except' => [
+  'create', 'edit', 'store', 'index', 'show'
+]]);

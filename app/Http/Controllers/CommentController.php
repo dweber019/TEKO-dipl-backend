@@ -16,7 +16,13 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        //
+        $attributes = $request->validate([
+          'message' => 'required|string',
+        ]);
+
+        $comment = tap($comment->fill($attributes))->save();
+
+        return $comment;
     }
 
     /**
@@ -27,6 +33,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
+        $comment->delete();
+        return response('', Response::HTTP_NO_CONTENT);
     }
 }

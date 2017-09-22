@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Foundation\Http\Middleware\SnakeCaseAttributes;
 
 class Kernel extends HttpKernel
 {
@@ -41,6 +42,7 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             'bindings',
             \Barryvdh\Cors\HandleCors::class,
+            \App\Http\Middleware\SnakeCaseAttributes::class,
         ],
     ];
 

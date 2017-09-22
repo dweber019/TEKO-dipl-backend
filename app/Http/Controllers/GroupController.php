@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class GroupController extends Controller
 {
@@ -15,7 +16,7 @@ class GroupController extends Controller
      */
     public function index()
     {
-        //
+        return Group::all();
     }
 
     /**
@@ -26,7 +27,13 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $attributes = $request->validate([
+          'name' => 'required|string',
+        ]);
+
+        $group = tap(new Group($attributes))->save();
+
+        return $group;
     }
 
     /**
@@ -37,7 +44,7 @@ class GroupController extends Controller
      */
     public function show(Group $group)
     {
-        //
+        return $group;
     }
 
     /**
@@ -49,7 +56,13 @@ class GroupController extends Controller
      */
     public function update(Request $request, Group $group)
     {
-        //
+        $attributes = $request->validate([
+          'name' => 'required|string',
+        ]);
+
+        $group = tap($group->fill($attributes))->save();
+
+        return $group;
     }
 
     /**
@@ -60,7 +73,8 @@ class GroupController extends Controller
      */
     public function destroy(Group $group)
     {
-        //
+        $group->delete();
+        return response('', Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -71,7 +85,7 @@ class GroupController extends Controller
      */
     public function usersIndex(Group $group)
     {
-        //
+        return $group->users()->get();
     }
 
     /**
@@ -83,7 +97,8 @@ class GroupController extends Controller
      */
     public function usersStore(Group $group, User $user)
     {
-        //
+        $group->users()->attach($user);
+        return response('', Response::HTTP_CREATED);
     }
 
     /**
@@ -95,6 +110,7 @@ class GroupController extends Controller
      */
     public function usersDestroy(Group $group, User $user)
     {
-        //
+        $group->users()->detach($user);
+        return response('', Response::HTTP_NO_CONTENT);
     }
 }
