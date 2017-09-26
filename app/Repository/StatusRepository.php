@@ -2,6 +2,10 @@
 
 namespace App\Repository;
 
+use App\Models\Lesson;
+use App\Models\Subject;
+use App\Models\Task;
+
 class StatusRepository
 {
 
@@ -14,7 +18,7 @@ class StatusRepository
         return $subjectWithStatus;
     }
 
-    public static function getStatusOfSubject($subject)
+    public static function getStatusOfSubject(Subject $subject)
     {
         $status = true;
 
@@ -32,7 +36,7 @@ class StatusRepository
             }
         };
 
-        $subject['status'] = $status;
+        $subject->setAttribute('status', $status);
 
         return $subject;
     }
@@ -46,11 +50,13 @@ class StatusRepository
         return $lessonsWithStatus;
     }
 
-    public static function getStatusOfLesson($lesson)
+    public static function getStatusOfLesson(Lesson $lesson)
     {
         $status = true;
 
-        foreach ($lesson['tasks'] as &$task) {
+        $lessonTemp = $lesson->toArray();
+
+        foreach ($lessonTemp['tasks'] as &$task) {
             if (empty($task['users'])) {
                 $status = false;
                 break;
@@ -62,7 +68,7 @@ class StatusRepository
             }
         }
 
-        $lesson['status'] = $status;
+        $lesson->setAttribute('status', $status);
 
         return $lesson;
     }
@@ -76,17 +82,19 @@ class StatusRepository
         return $tasksWithStatus;
     }
 
-    public static function getStatusOfTask($task)
+    public static function getStatusOfTask(Task $task)
     {
         $status = true;
 
-        if (empty($task['users'])) {
+        $taskTemp = $task->toArray();
+
+        if (empty($taskTemp['users'])) {
             $status = false;
-        } else if ($task['users'][0]['pivot']['done'] === 0) {
+        } else if ($taskTemp['users'][0]['pivot']['done'] === 0) {
             $status = false;
         }
 
-        $task['status'] = $status;
+        $task->setAttribute('status', $status);
 
         return $task;
     }

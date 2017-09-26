@@ -6,6 +6,8 @@ use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\User as UserResource;
+use App\Http\Resources\Group as GroupResource;
 
 class GroupController extends Controller
 {
@@ -16,7 +18,7 @@ class GroupController extends Controller
      */
     public function index()
     {
-        return Group::all();
+        return GroupResource::collection(Group::all());
     }
 
     /**
@@ -33,7 +35,7 @@ class GroupController extends Controller
 
         $group = tap(new Group($attributes))->save();
 
-        return $group;
+        return (new GroupResource($group))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**
@@ -44,7 +46,7 @@ class GroupController extends Controller
      */
     public function show(Group $group)
     {
-        return $group;
+        return new GroupResource($group);
     }
 
     /**
@@ -62,7 +64,7 @@ class GroupController extends Controller
 
         $group = tap($group->fill($attributes))->save();
 
-        return $group;
+        return new GroupResource($group);
     }
 
     /**
@@ -85,7 +87,7 @@ class GroupController extends Controller
      */
     public function usersIndex(Group $group)
     {
-        return $group->users()->get();
+        return UserResource::collection($group->users()->get());
     }
 
     /**

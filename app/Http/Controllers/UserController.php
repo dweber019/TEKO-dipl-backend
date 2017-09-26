@@ -11,6 +11,12 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\User as UserResource;
+use App\Http\Resources\Group as GroupResource;
+use App\Http\Resources\Notification as NotificationResource;
+use App\Http\Resources\Grade as GradeResource;
+use App\Http\Resources\Chat as ChatResource;
+use App\Http\Resources\Subject as SubjectResource;
 
 class UserController extends Controller
 {
@@ -21,7 +27,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::all();
+        return UserResource::collection(User::all());
     }
 
     /**
@@ -44,7 +50,7 @@ class UserController extends Controller
 
         $user = tap(new User($attributes))->save();
 
-        return $user;
+        return (new UserResource($user))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**
@@ -55,7 +61,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return $user;
+        return new UserResource($user);
     }
 
     /**
@@ -78,7 +84,7 @@ class UserController extends Controller
 
         $user = tap($user->fill($attributes))->save();
 
-        return $user;
+        return new UserResource($user);
     }
 
     /**
@@ -101,7 +107,7 @@ class UserController extends Controller
      */
     public function groupsIndex(User $user)
     {
-        return $user->groups()->get();
+        return GroupResource::collection($user->groups()->get());
     }
 
     /**
@@ -118,7 +124,7 @@ class UserController extends Controller
 
         $subjectWithStatus = StatusRepository::getStatusOfSubjects($subjects);
 
-        return $subjectWithStatus;
+        return SubjectResource::collection($subjectWithStatus);
     }
 
     /**
@@ -129,7 +135,8 @@ class UserController extends Controller
      */
     public function notificationsIndex(User $user)
     {
-        return $user->notifications()->get();
+
+        return NotificationResource::collection($user->notifications()->get());
     }
 
     /**
@@ -140,7 +147,7 @@ class UserController extends Controller
      */
     public function gradesIndex(User $user)
     {
-        return $user->grades()->get();
+        return GradeResource::collection($user->grades()->get());
     }
 
     /**
@@ -181,7 +188,7 @@ class UserController extends Controller
         $asSender = $user->senderChat()->get();
         $asReceiver = $user->receiverChat()->get();
 
-        return array_merge($asSender, $asReceiver);
+        return ChatResource::collection(collect($asSender)->merge($asReceiver));
     }
 
     /**
@@ -201,7 +208,7 @@ class UserController extends Controller
 
         $chat = tap(new Chat($attributes))->save();
 
-        return $chat;
+        return (new ChatResource($chat))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**

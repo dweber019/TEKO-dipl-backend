@@ -115,8 +115,8 @@ Route::resource('tasks', 'TaskController', ['except' => [
  * Task Items related routes
  */
 Route::prefix('taskitems')->group(function () {
-    Route::get('{taskitem}/work', 'TaskItemController@workIndex');
-    Route::put('{taskitem}/work', 'TaskItemController@workUpdate');
+    Route::get('{taskItem}/work', 'TaskItemController@workIndex');
+    Route::put('{taskItem}/work', 'TaskItemController@workUpdate');
 });
 Route::resource('taskitems', 'TaskItemController', ['except' => [
   'create', 'edit', 'store', 'index', 'show'

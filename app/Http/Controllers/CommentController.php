@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use App\Http\Resources\Comment as CommentResource;
 
 class CommentController extends Controller
 {
@@ -22,7 +23,7 @@ class CommentController extends Controller
 
         $comment = tap($comment->fill($attributes))->save();
 
-        return $comment;
+        return new CommentResource($comment);
     }
 
     /**

@@ -12,6 +12,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\Lesson as LessonResource;
+use App\Http\Resources\Task as TaskResource;
+use App\Http\Resources\Note as NoteResource;
+use App\Http\Resources\Comment as CommentResource;
 
 class LessonController extends Controller
 {
@@ -35,7 +39,7 @@ class LessonController extends Controller
 
         $lessonWithStatus = StatusRepository::getStatusOfLesson($lessonWithRelation);
 
-        return $lessonWithStatus;
+        return new LessonResource($lessonWithStatus);
     }
 
     /**
@@ -61,7 +65,7 @@ class LessonController extends Controller
 
         $lesson = tap($lesson->fill($attributes))->save();
 
-        return redirect('lessons/' . $lesson->id);
+        return redirect('api/lessons/' . $lesson->id);
     }
 
     /**
@@ -92,11 +96,11 @@ class LessonController extends Controller
 
         $tasksWithRelation = $lesson->tasks()->with([ 'users' => function ($query) use ($currentUser) {
             $query->where('user_id', '=', $currentUser->id);
-        } ])->get()->toArray();
+        } ])->get();
 
         $tasksWithStatus = StatusRepository::getStatusOfTasks($tasksWithRelation);
 
-        return $tasksWithStatus;
+        return TaskResource::collection($tasksWithStatus);
     }
 
     /**
@@ -118,7 +122,7 @@ class LessonController extends Controller
 
         $task = tap(new Task($attributes))->save();
 
-        return $task;
+        return redirect('api/tasks/' . $task->id);
     }
 
     /**
@@ -132,7 +136,7 @@ class LessonController extends Controller
     {
         $currentUser = $request->user();
         $note = $lesson->notes()->where('user_id', $currentUser->id)->first();
-        return $note;
+        return new NoteResource($note);
     }
 
     /**
@@ -158,7 +162,7 @@ class LessonController extends Controller
             $note = tap($note->fill($attributes))->update();
         }
 
-        return $note;
+        return new NoteResource($note);
     }
 
     /**
@@ -169,7 +173,7 @@ class LessonController extends Controller
      */
     public function commentsIndex(Lesson $lesson)
     {
-        return $lesson->comments()->get();
+        return CommentResource::collection($lesson->comments()->get());
     }
 
     /**
@@ -190,7 +194,7 @@ class LessonController extends Controller
         $comment = new Comment($attributes);
         $lesson->comments()->save($comment);
 
-        return $comment;
+        return new CommentResource($comment);
     }
 
 

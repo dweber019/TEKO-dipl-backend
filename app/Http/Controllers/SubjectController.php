@@ -11,6 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\Subject as SubjectResource;
+use App\Http\Resources\User as UserResource;
+use App\Http\Resources\GradeUser as GradeUserResource;
+use App\Http\Resources\Lesson as LessonResource;
 
 class SubjectController extends Controller
 {
@@ -25,10 +29,10 @@ class SubjectController extends Controller
         $currentUser = $request->user();
 
         if ($currentUser->isNotStudent()) {
-            return Subject::all();
+            return SubjectResource::collection(Subject::all());
         }
 
-        return redirect('users/' . $currentUser->id . '/subjects');
+        return redirect('api/users/' . $currentUser->id . '/subjects');
     }
 
     /**
@@ -47,7 +51,7 @@ class SubjectController extends Controller
 
         $subject = tap(new Subject($attributes))->save();
 
-        return redirect('subjects/' . $subject->id);
+        return redirect('api/subjects/' . $subject->id);
     }
 
     /**
@@ -71,7 +75,7 @@ class SubjectController extends Controller
 
         $subjectWithStatus = StatusRepository::getStatusOfSubject($subjectWithRelation);
 
-        return $subjectWithStatus;
+        return new SubjectResource($subjectWithStatus);
     }
 
     /**
@@ -91,7 +95,7 @@ class SubjectController extends Controller
 
         $subject = tap($subject->fill($attributes))->save();
 
-        return redirect('subjects/' . $subject->id);
+        return redirect('api/subjects/' . $subject->id);
     }
 
     /**
@@ -117,16 +121,16 @@ class SubjectController extends Controller
         $currentUser = Auth::user();
 
         if ($currentUser->isNotStudent()) {
-            return $subject->lessons()->get();
+            return LessonResource::collection($subject->lessons()->get());
         }
 
         $lessons = $subject->lessons()->with([ 'tasks.users' => function ($query) use ($currentUser) {
             $query->where('user_id', '=', $currentUser->id);
-        } ])->get()->toArray();
+        } ])->get();
 
         $lessonsWithStatus = StatusRepository::getStatusOfLessons($lessons);
 
-        return $lessonsWithStatus;
+        return LessonResource::collection(collect($lessonsWithStatus));
     }
 
     /**
@@ -154,7 +158,7 @@ class SubjectController extends Controller
 
         $lesson = tap(new Lesson($attributes))->save();
 
-        return redirect('lessons/' . $lesson->id);
+        return redirect('api/lessons/' . $lesson->id);
     }
 
     /**
@@ -165,7 +169,7 @@ class SubjectController extends Controller
      */
     public function gradesIndex(Subject $subject)
     {
-        return $subject->userGrades()->get();
+        return GradeUserResource::collection($subject->userGrades()->get());
     }
 
     /**
@@ -207,7 +211,7 @@ class SubjectController extends Controller
      */
     public function usersIndex(Subject $subject)
     {
-        return $subject->users()->get();
+        return UserResource::collection($subject->users()->get());
     }
 
     /**

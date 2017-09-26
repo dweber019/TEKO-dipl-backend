@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\TaskItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\TaskItem as TaskItemResource;
+use App\Http\Resources\Work as WorkResource;
 
 class TaskItemController extends Controller
 {
@@ -31,7 +34,7 @@ class TaskItemController extends Controller
 
         $taskItem = tap($taskItem->fill($attributes))->save();
 
-        return $taskItem;
+        return new TaskItemResource($taskItem);
     }
 
     /**
@@ -49,17 +52,16 @@ class TaskItemController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\TaskItem  $taskItem
      * @return \Illuminate\Http\Response
      */
-    public function workIndex(Request $request, TaskItem $taskItem)
+    public function workIndex(TaskItem $taskItem)
     {
-        $currentUser = $request->user();
+        $currentUser = Auth::user();
 
         $work = $taskItem->users()->where('user_id', $currentUser->id)->first();
 
-        return $work;
+        return new WorkResource($work);
     }
 
     /**
@@ -78,8 +80,7 @@ class TaskItemController extends Controller
         $currentUser = $request->user();
 
         $taskItem->users()->attach($currentUser->id, $attributes);
-        $work = $taskItem->users()->where('user_id', $currentUser->id)->first();
 
-        return $work;
+        return redirect('api/taskitems/' . $taskItem->id . '/work');
     }
 }

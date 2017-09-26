@@ -11,6 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\Task as TaskResource;
+use App\Http\Resources\Note as NoteResource;
+use App\Http\Resources\Comment as CommentResource;
+use App\Http\Resources\TaskItem as TaskItemResource;
 
 class TaskController extends Controller
 {
@@ -25,16 +29,16 @@ class TaskController extends Controller
         $currentUser = Auth::user();
 
         if ($currentUser->isNotStudent()) {
-            return $task;
+            return new TaskResource($task);
         }
 
         $taskWithRelation = $task->load([ 'users' => function ($query) use ($currentUser) {
             $query->where('user_id', '=', $currentUser->id);
-        } ])->toArray();
+        } ]);
 
         $taskWithStatus = StatusRepository::getStatusOfTask($taskWithRelation);
 
-        return $taskWithStatus;
+        return new TaskResource($taskWithStatus);
     }
 
     /**
@@ -54,7 +58,7 @@ class TaskController extends Controller
 
         $task = tap($task->fill($attributes))->save();
 
-        return redirect('tasks/' . $task->id);
+        return redirect('api/tasks/' . $task->id);
     }
 
     /**
@@ -72,12 +76,12 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Task  $lesson
+     * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function taskItemsIndex(Task $lesson)
+    public function taskItemsIndex(Task $task)
     {
-        return $lesson->taskItems()->get();
+        return TaskItemResource::collection($task->taskItems()->get());
     }
 
     /**
@@ -104,7 +108,7 @@ class TaskController extends Controller
 
         $taskItem = tap(new TaskItem($attributes))->save();
 
-        return $taskItem;
+        return new TaskItemResource($taskItem);
     }
 
     /**
@@ -118,7 +122,7 @@ class TaskController extends Controller
     {
         $currentUser = $request->user();
         $note = $task->notes()->where('user_id', $currentUser->id)->first();
-        return $note;
+        return new NoteResource($note);
     }
 
     /**
@@ -144,7 +148,7 @@ class TaskController extends Controller
             $note = tap($note->fill($attributes))->update();
         }
 
-        return $note;
+        return new NoteResource($note);
     }
 
     /**
@@ -155,7 +159,7 @@ class TaskController extends Controller
      */
     public function commentsIndex(Task $task)
     {
-        return $task->comments()->get();
+        return CommentResource::collection($task->comments()->get());
     }
 
     /**
@@ -176,7 +180,7 @@ class TaskController extends Controller
         $comment = new Comment($attributes);
         $task->comments()->save($comment);
 
-        return $comment;
+        return new CommentResource($comment);
     }
 
     /**
