@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use \App\Helpers\UserTypes;
 
 class CreateUsersTable extends Migration
 {
@@ -20,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('auth0_id')->nullable();
             $table->string('invite_token');
             $table->string('invite_email');
-            $table->enum('type', ['student', 'teacher', 'admin'])->default('student');
+            $table->enum('type', [UserTypes::STUDENT, UserTypes::TEACHER, UserTypes::ADMIN])->default(UserTypes::STUDENT);
 //            $table->string('email')->unique();
 //            $table->string('password');
 //            $table->rememberToken();

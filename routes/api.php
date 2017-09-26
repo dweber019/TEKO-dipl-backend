@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 |
 */
 
+\Illuminate\Support\Facades\Auth::loginUsingId(2);
+
 
 /*
  * User related routes
@@ -26,8 +28,6 @@ Route::prefix('users')->group(function () {
 
     Route::get('{user}/grades', 'UserController@gradesIndex');
 
-    Route::get('{user}/agenda', 'UserController@agendaIndex');
-
     Route::get('{user}/chats', 'UserController@chatsIndex');
     Route::post('{user}/chats', 'UserController@chatsStore');
     Route::delete('{user}/chats/{user2}', 'UserController@chatsDestroy');
@@ -37,8 +37,9 @@ Route::resource('users', 'UserController', ['except' => [
 ]]);
 
 /*
- * Feed
+ * Feed & Agenda
  */
+Route::get('agenda', 'UserController@agendaIndex');
 Route::get('feed/{token}', 'UserController@feedIndex');
 
 /*
@@ -88,7 +89,7 @@ Route::prefix('lessons')->group(function () {
     Route::post('{lesson}/comments', 'LessonController@commentsStore');
 });
 Route::resource('lessons', 'LessonController', ['except' => [
-  'create', 'edit', 'store'
+  'create', 'edit', 'store', 'index'
 ]]);
 
 /*
@@ -107,7 +108,7 @@ Route::prefix('tasks')->group(function () {
     Route::put('{task}/done', 'TaskController@doneUpdate');
 });
 Route::resource('tasks', 'TaskController', ['except' => [
-  'create', 'edit', 'store'
+  'create', 'edit', 'store', 'index'
 ]]);
 
 /*

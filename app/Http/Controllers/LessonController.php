@@ -2,26 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LessonType;
 use App\Models\Comment;
 use App\Models\Lesson;
 use App\Models\Note;
 use App\Models\Task;
+use App\Repository\StatusRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class LessonController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return Lesson::all();
-    }
-
     /**
      * Display the specified resource.
      *
@@ -30,7 +23,19 @@ class LessonController extends Controller
      */
     public function show(Lesson $lesson)
     {
-        return $lesson;
+        $currentUser = Auth::user();
+
+        if ($currentUser->isNotStudent()) {
+            return $lesson;
+        }
+
+        $lessonWithRelation = $lesson->load([ 'tasks.users' => function ($query) use ($currentUser) {
+            $query->where('user_id', '=', $currentUser->id);
+        } ]);
+
+        $lessonWithStatus = StatusRepository::getStatusOfLesson($lessonWithRelation);
+
+        return $lessonWithStatus;
     }
 
     /**
@@ -47,7 +52,7 @@ class LessonController extends Controller
           'end_date' => 'required|date|after:start_date',
           'type' => [
             'required',
-            Rule::in(['lesson', 'exam', 'reminder']),
+            Rule::in([LessonType::LESSON, LessonType::EXAM, LessonType::REMINDER]),
           ],
           'location' => 'string|nullable',
           'room' => 'string|nullable',
@@ -56,7 +61,7 @@ class LessonController extends Controller
 
         $lesson = tap($lesson->fill($attributes))->save();
 
-        return $lesson;
+        return redirect('lessons/' . $lesson->id);
     }
 
     /**
@@ -79,7 +84,19 @@ class LessonController extends Controller
      */
     public function tasksIndex(Lesson $lesson)
     {
-        return $lesson->tasks()->get();
+        $currentUser = Auth::user();
+
+        if ($currentUser->isNotStudent()) {
+            return $lesson->tasks()->get();
+        }
+
+        $tasksWithRelation = $lesson->tasks()->with([ 'users' => function ($query) use ($currentUser) {
+            $query->where('user_id', '=', $currentUser->id);
+        } ])->get()->toArray();
+
+        $tasksWithStatus = StatusRepository::getStatusOfTasks($tasksWithRelation);
+
+        return $tasksWithStatus;
     }
 
     /**

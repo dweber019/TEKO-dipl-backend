@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LessonType;
 use App\Models\Lesson;
 use App\Models\Subject;
 use App\Models\User;
+use App\Repository\StatusRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,11 +17,18 @@ class SubjectController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Subject::all();
+        $currentUser = $request->user();
+
+        if ($currentUser->isNotStudent()) {
+            return Subject::all();
+        }
+
+        return redirect('users/' . $currentUser->id . '/subjects');
     }
 
     /**
@@ -37,18 +47,31 @@ class SubjectController extends Controller
 
         $subject = tap(new Subject($attributes))->save();
 
-        return $subject;
+        return redirect('subjects/' . $subject->id);
     }
 
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function show(Subject $subject)
+    public function show(Request $request, Subject $subject)
     {
-        return $subject;
+        $currentUser = $request->user();
+
+        if ($currentUser->isNotStudent()) {
+            return $subject;
+        }
+
+        $subjectWithRelation = $subject->load([ 'lessons.tasks.users' => function ($query) use ($currentUser) {
+            $query->where('user_id', '=', $currentUser->id);
+        } ]);
+
+        $subjectWithStatus = StatusRepository::getStatusOfSubject($subjectWithRelation);
+
+        return $subjectWithStatus;
     }
 
     /**
@@ -68,7 +91,7 @@ class SubjectController extends Controller
 
         $subject = tap($subject->fill($attributes))->save();
 
-        return $subject;
+        return redirect('subjects/' . $subject->id);
     }
 
     /**
@@ -91,7 +114,19 @@ class SubjectController extends Controller
      */
     public function lessonsIndex(Subject $subject)
     {
-        return $subject->lessons()->get();
+        $currentUser = Auth::user();
+
+        if ($currentUser->isNotStudent()) {
+            return $subject->lessons()->get();
+        }
+
+        $lessons = $subject->lessons()->with([ 'tasks.users' => function ($query) use ($currentUser) {
+            $query->where('user_id', '=', $currentUser->id);
+        } ])->get()->toArray();
+
+        $lessonsWithStatus = StatusRepository::getStatusOfLessons($lessons);
+
+        return $lessonsWithStatus;
     }
 
     /**
@@ -108,7 +143,7 @@ class SubjectController extends Controller
           'end_date' => 'required|date|after:start_date',
           'type' => [
             'required',
-            Rule::in(['lesson', 'exam', 'reminder']),
+            Rule::in([LessonType::LESSON, LessonType::EXAM, LessonType::REMINDER]),
           ],
           'location' => 'string|nullable',
           'room' => 'string|nullable',
@@ -119,7 +154,7 @@ class SubjectController extends Controller
 
         $lesson = tap(new Lesson($attributes))->save();
 
-        return $lesson;
+        return redirect('lessons/' . $lesson->id);
     }
 
     /**

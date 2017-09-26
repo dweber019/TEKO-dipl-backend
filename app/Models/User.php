@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use \App\Helpers\UserTypes;
 
 class User extends Authenticatable
 {
@@ -26,6 +27,10 @@ class User extends Authenticatable
     protected $hidden = [
         'invite_token', 'auth0_id', 'invite_email',
     ];
+
+    public function isNotStudent() {
+        return $this->type !== UserTypes::STUDENT;
+    }
 
     /**
      * The groups that belong to the user.

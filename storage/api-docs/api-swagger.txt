@@ -441,18 +441,13 @@
         }
       }
     },
-    "/users/{id}/agenda": {
+    "/users/agenda": {
       "get": {
         "tags": [
           "Benutzer",
           "Agenda"
         ],
         "summary": "Die Agenda eines Benutzers",
-        "parameters": [
-          {
-            "$ref": "#/parameters/ID"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Erfolgreich",
@@ -2230,7 +2225,7 @@
           "type": "integer"
         },
         "message": {
-          "type": "integer"
+          "type": "string"
         }
       }
     },
@@ -2367,6 +2362,14 @@
           "$ref": "#/definitions/LessonPut"
         },
         {
+          "type": "object",
+          "properties": {
+            "subjectId": {
+              "type": "integer"
+            }
+          }
+        },
+        {
           "$ref": "#/definitions/Timestamps"
         }
       ]
@@ -2390,15 +2393,12 @@
         "location": {
           "type": "string"
         },
-        "map": {
+        "room": {
           "type": "string"
         },
         "canceled": {
           "type": "boolean",
           "default": false
-        },
-        "subjectId": {
-          "type": "integer"
         }
       }
     },

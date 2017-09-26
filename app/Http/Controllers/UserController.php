@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\UserTypes;
 use App\Models\Chat;
 use App\Models\User;
+use App\Repository\StatusRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
 
@@ -32,6 +36,10 @@ class UserController extends Controller
           'firstname' => 'string|nullable',
           'lastname' => 'string|nullable',
           'invite_email' => 'required|email|unique:users',
+          'type' => [
+            'required',
+            Rule::in([UserTypes::STUDENT, UserTypes::TEACHER, UserTypes::ADMIN]),
+          ],
         ]);
 
         $user = tap(new User($attributes))->save();
@@ -62,6 +70,10 @@ class UserController extends Controller
         $attributes = $request->validate([
           'firstname' => 'string',
           'lastname' => 'string',
+          'type' => [
+            'required',
+            Rule::in([UserTypes::STUDENT, UserTypes::TEACHER, UserTypes::ADMIN]),
+          ],
         ]);
 
         $user = tap($user->fill($attributes))->save();
@@ -100,7 +112,13 @@ class UserController extends Controller
      */
     public function subjectsIndex(User $user)
     {
-        return $user->subjects()->get();
+        $subjects = $user->subjects()->with([ 'lessons.tasks.users' => function ($query) use ($user) {
+            $query->where('user_id', '=', $user->id);
+        } ])->get();
+
+        $subjectWithStatus = StatusRepository::getStatusOfSubjects($subjects);
+
+        return $subjectWithStatus;
     }
 
     /**
@@ -128,12 +146,28 @@ class UserController extends Controller
     /**
      * Display the agenda of the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function agendaIndex(User $user)
+    public function agendaIndex(Request $request)
     {
-        // TODO: Implement Agenda
+        /* @var $currentUser User */
+        $currentUser = $request->user();
+
+        $subjects = $currentUser->subjects()->with([ 'lessons' => function ($query) use ($currentUser) {
+            $query->where('start_date', '>=', Carbon::today()->toDateTimeString());
+            $query->with([ 'tasks.users' => function ($query) use ($currentUser) {
+                $query->where('user_id', '=', $currentUser->id);
+            } ]);
+        } ])->get();
+
+        $lessons = collect($subjects->toArray())->map(function($item) {
+            return $item['lessons'];
+        })->flatten(1);
+
+        $agenda = StatusRepository::getStatusOfLessons($lessons);
+
+        return $agenda;
     }
 
     /**

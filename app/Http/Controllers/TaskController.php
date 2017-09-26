@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\Note;
 use App\Models\Task;
 use App\Models\TaskItem;
+use App\Repository\StatusRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -14,16 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 class TaskController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return Task::all();
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Task  $task
@@ -31,7 +22,19 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        return $task;
+        $currentUser = Auth::user();
+
+        if ($currentUser->isNotStudent()) {
+            return $task;
+        }
+
+        $taskWithRelation = $task->load([ 'users' => function ($query) use ($currentUser) {
+            $query->where('user_id', '=', $currentUser->id);
+        } ])->toArray();
+
+        $taskWithStatus = StatusRepository::getStatusOfTask($taskWithRelation);
+
+        return $taskWithStatus;
     }
 
     /**
@@ -51,7 +54,7 @@ class TaskController extends Controller
 
         $task = tap($task->fill($attributes))->save();
 
-        return $task;
+        return redirect('tasks/' . $task->id);
     }
 
     /**
