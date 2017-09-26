@@ -441,7 +441,7 @@
         }
       }
     },
-    "/users/agenda": {
+    "/agenda": {
       "get": {
         "tags": [
           "Benutzer",
@@ -452,7 +452,10 @@
           "200": {
             "description": "Erfolgreich",
             "schema": {
-              "$ref": "#/definitions/Timestamps"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Lesson"
+              }
             }
           },
           "401": {
@@ -1188,31 +1191,6 @@
 
     # Lessons ---------------------------------------------------------------------
 
-    "/lessons": {
-      "get": {
-        "tags": [
-          "Unterricht"
-        ],
-        "summary": "Alle Unterricht",
-        "responses": {
-          "200": {
-            "description": "Erfolgreich",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Lesson"
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/responses/Unauthorized"
-          },
-          "500": {
-            "$ref": "#/responses/ServerError"
-          }
-        }
-      }
-    },
     "/lessons/{id}": {
       "get": {
         "tags": [
@@ -1520,31 +1498,6 @@
 
     # Tasks ---------------------------------------------------------------------
 
-    "/tasks": {
-      "get": {
-        "tags": [
-          "Aufgaben"
-        ],
-        "summary": "Alle Aufgaben",
-        "responses": {
-          "200": {
-            "description": "Erfolgreich",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Task"
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/responses/Unauthorized"
-          },
-          "500": {
-            "$ref": "#/responses/ServerError"
-          }
-        }
-      }
-    },
     "/tasks/{id}": {
       "get": {
         "tags": [
@@ -2138,6 +2091,14 @@
         },
         "lastname": {
           "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "student",
+            "teacher",
+            "admin"
+          ]
         }
       }
     },
@@ -2238,6 +2199,14 @@
         },
         {
           "$ref": "#/definitions/SubjectPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "boolean"
+            }
+          }
         },
         {
           "$ref": "#/definitions/Timestamps"
@@ -2366,6 +2335,9 @@
           "properties": {
             "subjectId": {
               "type": "integer"
+            },
+            "status": {
+              "type": "boolean"
             }
           }
         },
@@ -2399,6 +2371,14 @@
         "canceled": {
           "type": "boolean",
           "default": false
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "lesson",
+            "exam",
+            "reminder"
+          ]
         }
       }
     },
@@ -2474,6 +2454,9 @@
           "properties": {
             "lessonId": {
               "type": "integer"
+            },
+            "status": {
+              "type": "boolean"
             }
           }
         },
