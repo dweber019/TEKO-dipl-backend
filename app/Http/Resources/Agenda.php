@@ -3,9 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
-use Illuminate\Support\Facades\Auth;
 
-class User extends Resource
+class Agenda extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -15,14 +14,16 @@ class User extends Resource
      */
     public function toArray($request)
     {
-        $currentUser = Auth::user();
-
         return [
           'id' => $this->id,
-          'firstname' => $this->fistname,
-          'lastname' => $this->lastname,
+          'startDate' => is_null($this->start_date) ? null : $this->start_date->toDateTimeString(),
+          'endDate' => is_null($this->end_date) ? null : $this->end_date->toDateTimeString(),
           'type' => $this->type,
-          'calender_token' => $currentUser->id !== $this->id ? null : $this->calender_token,
+          'location' => $this->location,
+          'room' => $this->room,
+          'canceled' => !!$this->canceled,
+          'name' => $this->subject->name,
+          'status' => $this->status,
           'createdAt' => is_null($this->created_at) ? null : $this->created_at->toDateTimeString(),
           'updatedAt' => is_null($this->updated_at) ? null : $this->updated_at->toDateTimeString(),
         ];

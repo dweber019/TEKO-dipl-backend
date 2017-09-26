@@ -28,6 +28,17 @@ class User extends Authenticatable
         'invite_token', 'auth0_id', 'invite_email',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function($model) {
+            $model->invite_token = md5($model->firstname . $model->lastname . uniqid());
+            $model->calender_token = md5($model->firstname . $model->lastname . uniqid());
+        });
+    }
+
+
     public function isNotStudent() {
         return $this->type !== UserTypes::STUDENT;
     }

@@ -88,7 +88,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/User"
@@ -287,7 +287,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Chat"
@@ -507,7 +507,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Group"
@@ -788,7 +788,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Subject"
@@ -953,7 +953,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Lesson"
@@ -1323,7 +1323,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Task"
@@ -1462,7 +1462,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Comment"
@@ -1695,7 +1695,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Comment"
@@ -1794,7 +1794,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/TaskItem"

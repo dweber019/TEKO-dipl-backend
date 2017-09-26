@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Repository\StatusRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,7 @@ use App\Http\Resources\Notification as NotificationResource;
 use App\Http\Resources\Grade as GradeResource;
 use App\Http\Resources\Chat as ChatResource;
 use App\Http\Resources\Subject as SubjectResource;
-use App\Http\Resources\Lesson as LessonResource;
+use App\Http\Resources\Agenda as AgendaResource;
 
 class UserController extends Controller
 {
@@ -154,19 +155,18 @@ class UserController extends Controller
     /**
      * Display the agenda of the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function agendaIndex(Request $request)
+    public function agendaIndex()
     {
         /* @var $currentUser User */
-        $currentUser = $request->user();
+        $currentUser = Auth::user();
 
         $subjects = $currentUser->subjects()->with([ 'lessons' => function ($query) use ($currentUser) {
             $query->where('start_date', '>=', Carbon::today()->toDateTimeString());
             $query->with([ 'tasks.users' => function ($query) use ($currentUser) {
                 $query->where('user_id', '=', $currentUser->id);
-            } ]);
+            } , 'subject']);
         } ])->get();
 
         $lessons = collect($subjects)->map(function($item) {
@@ -175,7 +175,7 @@ class UserController extends Controller
 
         $agenda = StatusRepository::getStatusOfLessons($lessons);
 
-        return LessonResource::collection($agenda);
+        return AgendaResource::collection($agenda);
     }
 
     /**
@@ -243,7 +243,33 @@ class UserController extends Controller
      */
     public function feedIndex(String $token)
     {
-        // TODO: Implement Feed
+        /* @var $currentUser User */
+        $currentUser = User::where('calender_token', $token)->first();
+
+        $subjects = $currentUser->subjects()->with([ 'lessons.subject' ])->get();
+
+        $lessons = collect($subjects)->map(function($item) {
+            return $item->lessons;
+        })->flatten(1);
+
+        $vCalendar = new \Eluceo\iCal\Component\Calendar('dipl-backend.scapp.io');
+
+        foreach ($lessons->toArray() as &$lesson) {
+            $vEvent = new \Eluceo\iCal\Component\Event();
+            $vEvent
+              ->setDtStart(new \DateTime($lesson['start_date'], new \DateTimeZone(config('app.timezone'))))
+              ->setDtEnd(new \DateTime($lesson['end_date'], new \DateTimeZone(config('app.timezone'))))
+              ->setLocation($lesson['location'])
+              ->setSummary($lesson['subject']['name'])
+              ->setDescription('Room: ' . $lesson['room']);
+
+            $vCalendar->addComponent($vEvent);
+        }
+
+        return response($vCalendar->render(), 200, [
+          'Content-Type' => 'text/calendar; charset=utf-8',
+          'Content-Disposition' => 'attachment; filename="cal.ics"',
+        ]);
     }
 
 }
