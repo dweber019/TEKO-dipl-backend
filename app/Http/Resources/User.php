@@ -22,7 +22,7 @@ class User extends Resource
           'firstname' => $this->fistname,
           'lastname' => $this->lastname,
           'type' => $this->type,
-          'calender_token' => $currentUser->id !== $this->id ? null : $this->calender_token,
+          'calenderToken' => $currentUser->id !== $this->id ? null : $this->calender_token,
           'createdAt' => is_null($this->created_at) ? null : $this->created_at->toDateTimeString(),
           'updatedAt' => is_null($this->updated_at) ? null : $this->updated_at->toDateTimeString(),
         ];
