@@ -451,7 +451,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/Lesson"
+                "$ref": "#/definitions/Agenda"
               }
             }
           },
@@ -720,6 +720,9 @@
           "Benutzer"
         ],
         "summary": "Feed eines Benutzers an hand des Tokens",
+        "produces": [
+          "text/calendar"
+        ],
         "parameters": [
           {
             "name": "token",
@@ -731,12 +734,9 @@
         ],
         "responses": {
           "200": {
-            "description": "Erfolgreich",
+            "description": "Download iCal Datei",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Timestamps"
-              }
+              "type": "file"
             }
           },
           "404": {
@@ -2281,6 +2281,22 @@
         },
         {
           "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "Agenda": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Lesson"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          }
         }
       ]
     },
