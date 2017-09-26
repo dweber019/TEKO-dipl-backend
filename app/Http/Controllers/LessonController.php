@@ -23,14 +23,14 @@ class LessonController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Lesson  $lesson
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function show(Lesson $lesson)
     {
         $currentUser = Auth::user();
 
         if ($currentUser->isNotStudent()) {
-            return $lesson;
+            return new LessonResource($lesson);
         }
 
         $lessonWithRelation = $lesson->load([ 'tasks.users' => function ($query) use ($currentUser) {
@@ -91,7 +91,7 @@ class LessonController extends Controller
         $currentUser = Auth::user();
 
         if ($currentUser->isNotStudent()) {
-            return $lesson->tasks()->get();
+            return TaskResource::collection($lesson->tasks()->get());
         }
 
         $tasksWithRelation = $lesson->tasks()->with([ 'users' => function ($query) use ($currentUser) {
@@ -130,7 +130,7 @@ class LessonController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Lesson  $lesson
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function noteIndex(Request $request, Lesson $lesson)
     {
@@ -144,7 +144,7 @@ class LessonController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Lesson  $lesson
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function noteUpdate(Request $request, Lesson $lesson)
     {
@@ -169,7 +169,7 @@ class LessonController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Lesson  $lesson
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function commentsIndex(Lesson $lesson)
     {
@@ -181,7 +181,7 @@ class LessonController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Lesson  $lesson
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function commentsStore(Request $request, Lesson $lesson)
     {

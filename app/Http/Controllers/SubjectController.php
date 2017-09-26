@@ -22,7 +22,7 @@ class SubjectController extends Controller
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
@@ -57,16 +57,15 @@ class SubjectController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Subject  $subject
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
-    public function show(Request $request, Subject $subject)
+    public function show(Subject $subject)
     {
-        $currentUser = $request->user();
+        $currentUser = Auth::user();
 
         if ($currentUser->isNotStudent()) {
-            return $subject;
+            return new SubjectResource($subject);
         }
 
         $subjectWithRelation = $subject->load([ 'lessons.tasks.users' => function ($query) use ($currentUser) {
@@ -114,7 +113,7 @@ class SubjectController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Subject  $subject
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function lessonsIndex(Subject $subject)
     {
@@ -165,7 +164,7 @@ class SubjectController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Subject  $subject
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function gradesIndex(Subject $subject)
     {
@@ -207,7 +206,7 @@ class SubjectController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Subject  $subject
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function usersIndex(Subject $subject)
     {

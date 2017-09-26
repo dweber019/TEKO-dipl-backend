@@ -23,7 +23,7 @@ class TaskController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function show(Task $task)
     {
@@ -78,7 +78,7 @@ class TaskController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function taskItemsIndex(Task $task)
     {
@@ -90,7 +90,7 @@ class TaskController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function taskItemsStore(Request $request, Task $task)
     {
@@ -115,13 +115,12 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
-    public function noteIndex(Request $request, Task $task)
+    public function noteIndex(Task $task)
     {
-        $currentUser = $request->user();
+        $currentUser = Auth::user();
         $note = $task->notes()->where('user_id', $currentUser->id)->first();
         return new NoteResource($note);
     }
@@ -131,7 +130,7 @@ class TaskController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function noteUpdate(Request $request, Task $task)
     {
@@ -156,7 +155,7 @@ class TaskController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function commentsIndex(Task $task)
     {
@@ -168,7 +167,7 @@ class TaskController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function commentsStore(Request $request, Task $task)
     {

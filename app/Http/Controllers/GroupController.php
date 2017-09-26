@@ -14,7 +14,7 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -25,7 +25,7 @@ class GroupController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function store(Request $request)
     {
@@ -35,14 +35,14 @@ class GroupController extends Controller
 
         $group = tap(new Group($attributes))->save();
 
-        return (new GroupResource($group))->response()->setStatusCode(Response::HTTP_CREATED);
+        return (new GroupResource($group));
     }
 
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\Group  $group
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function show(Group $group)
     {
@@ -54,7 +54,7 @@ class GroupController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Group  $group
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function update(Request $request, Group $group)
     {
@@ -83,7 +83,7 @@ class GroupController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Group  $group
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function usersIndex(Group $group)
     {

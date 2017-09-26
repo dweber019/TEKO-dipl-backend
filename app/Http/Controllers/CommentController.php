@@ -13,7 +13,7 @@ class CommentController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Comment  $comment
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function update(Request $request, Comment $comment)
     {

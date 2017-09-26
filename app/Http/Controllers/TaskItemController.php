@@ -18,7 +18,7 @@ class TaskItemController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\TaskItem  $taskItem
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function update(Request $request, TaskItem $taskItem)
     {
@@ -54,7 +54,7 @@ class TaskItemController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\TaskItem  $taskItem
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function workIndex(TaskItem $taskItem)
     {

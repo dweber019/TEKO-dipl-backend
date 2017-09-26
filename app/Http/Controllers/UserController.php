@@ -17,13 +17,14 @@ use App\Http\Resources\Notification as NotificationResource;
 use App\Http\Resources\Grade as GradeResource;
 use App\Http\Resources\Chat as ChatResource;
 use App\Http\Resources\Subject as SubjectResource;
+use App\Http\Resources\Lesson as LessonResource;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -34,7 +35,7 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function store(Request $request)
     {
@@ -50,14 +51,14 @@ class UserController extends Controller
 
         $user = tap(new User($attributes))->save();
 
-        return (new UserResource($user))->response()->setStatusCode(Response::HTTP_CREATED);
+        return new UserResource($user);
     }
 
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function show(User $user)
     {
@@ -69,7 +70,7 @@ class UserController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function update(Request $request, User $user)
     {
@@ -103,7 +104,7 @@ class UserController extends Controller
      * Display the groups of the specified resource.
      *
      * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function groupsIndex(User $user)
     {
@@ -114,7 +115,7 @@ class UserController extends Controller
      * Display the subjects of the specified resource.
      *
      * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\jsonResponse
      */
     public function subjectsIndex(User $user)
     {
@@ -131,7 +132,7 @@ class UserController extends Controller
      * Display the notifications of the specified resource.
      *
      * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function notificationsIndex(User $user)
     {
@@ -143,7 +144,7 @@ class UserController extends Controller
      * Display the grades of the specified resource.
      *
      * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function gradesIndex(User $user)
     {
@@ -154,7 +155,7 @@ class UserController extends Controller
      * Display the agenda of the specified resource.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function agendaIndex(Request $request)
     {
@@ -168,20 +169,20 @@ class UserController extends Controller
             } ]);
         } ])->get();
 
-        $lessons = collect($subjects->toArray())->map(function($item) {
-            return $item['lessons'];
+        $lessons = collect($subjects)->map(function($item) {
+            return $item->lessons;
         })->flatten(1);
 
         $agenda = StatusRepository::getStatusOfLessons($lessons);
 
-        return $agenda;
+        return LessonResource::collection($agenda);
     }
 
     /**
      * Display the chats of the specified resource.
      *
      * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function chatsIndex(User $user)
     {
@@ -196,7 +197,7 @@ class UserController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function chatsStore(Request $request, User $user)
     {
@@ -208,7 +209,7 @@ class UserController extends Controller
 
         $chat = tap(new Chat($attributes))->save();
 
-        return (new ChatResource($chat))->response()->setStatusCode(Response::HTTP_CREATED);
+        return new ChatResource($chat);
     }
 
     /**
