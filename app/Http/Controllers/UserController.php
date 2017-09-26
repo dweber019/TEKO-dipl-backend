@@ -44,7 +44,7 @@ class UserController extends Controller
           'invite_email' => 'required|email|unique:users',
           'type' => [
             'required',
-            Rule::in([UserTypes::STUDENT, UserTypes::TEACHER, UserTypes::ADMIN]),
+            Rule::in(UserTypes::toArray()),
           ],
         ]);
 
@@ -78,7 +78,7 @@ class UserController extends Controller
           'lastname' => 'string',
           'type' => [
             'required',
-            Rule::in([UserTypes::STUDENT, UserTypes::TEACHER, UserTypes::ADMIN]),
+            Rule::in(UserTypes::toArray()),
           ],
         ]);
 

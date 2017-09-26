@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\LessonType;
+use App\Helpers\LessonTypes;
 use App\Models\Comment;
 use App\Models\Lesson;
 use App\Models\Note;
@@ -56,7 +56,7 @@ class LessonController extends Controller
           'end_date' => 'required|date|after:start_date',
           'type' => [
             'required',
-            Rule::in([LessonType::LESSON, LessonType::EXAM, LessonType::REMINDER]),
+            Rule::in(LessonTypes::toArray()),
           ],
           'location' => 'string|nullable',
           'room' => 'string|nullable',

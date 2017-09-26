@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\QuestionTypes;
 use App\Models\Comment;
 use App\Models\Note;
 use App\Models\Task;
@@ -98,7 +99,7 @@ class TaskController extends Controller
           'description' => 'string|nullable',
           'question_type' => [
             'required',
-            Rule::in(['toggle', 'select', 'file', 'input', 'text']),
+            Rule::in(QuestionTypes::toArray()),
           ],
           'question' => 'string|nullable',
           'order' => 'integer',

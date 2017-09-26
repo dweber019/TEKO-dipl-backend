@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\QuestionTypes;
 use App\Models\TaskItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,7 @@ class TaskItemController extends Controller
           'description' => 'string|nullable',
           'question_type' => [
             'required',
-            Rule::in(['toggle', 'select', 'file', 'input', 'text']),
+            Rule::in(QuestionTypes::toArray()),
           ],
           'question' => 'string|nullable',
           'order' => 'integer',

@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('auth0_id')->nullable();
             $table->string('invite_token');
             $table->string('invite_email');
-            $table->enum('type', [UserTypes::STUDENT, UserTypes::TEACHER, UserTypes::ADMIN])->default(UserTypes::STUDENT);
+            $table->enum('type', UserTypes::toArray())->default(UserTypes::STUDENT);
 //            $table->string('email')->unique();
 //            $table->string('password');
 //            $table->rememberToken();

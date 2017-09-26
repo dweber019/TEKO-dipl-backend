@@ -9,4 +9,12 @@ class UserTypes
     const TEACHER = 'teacher';
     const ADMIN = 'admin';
 
+    public static function toArray() {
+        return [
+          UserTypes::STUDENT,
+          UserTypes::TEACHER,
+          UserTypes::ADMIN,
+        ];
+    }
+
 }
