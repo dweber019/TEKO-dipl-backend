@@ -63,13 +63,20 @@
       }
     }
   },
+  "security": [
+    {
+      "api_key": []
+    },
+    {
+      "oauth": [
+        "openid",
+        "profile"
+      ]
+    }
+  ],
   "paths": {
     "/users": {
       "get": {
-        "security":[
-          {"api_key":[]},
-          {"oauth":["openid"]}
-        ],
         "tags": [
           "Benutzer"
         ],
@@ -739,6 +746,7 @@
           "Feed",
           "Benutzer"
         ],
+        "security": [],
         "summary": "Feed eines Benutzers an hand des Tokens",
         "produces": [
           "text/calendar"
