@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\TaskItem;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\DB;
 
 class TaskItemPolicy
 {
@@ -31,8 +32,8 @@ class TaskItemPolicy
      */
     public function view(User $user, TaskItem $taskItem)
     {
-        return SubjectPolicy::isTeacherOfSubject($user, $taskItem->task()->first()->lesson()->first()->subject()->first()) ||
-          SubjectPolicy::isStudentOfSubject($user, $taskItem->task()->first()->lesson()->first()->subject()->first());
+        return $this->isTeacher($user, $taskItem) ||
+          $this->isStudent($user, $taskItem);
     }
 
     /**
@@ -44,7 +45,7 @@ class TaskItemPolicy
      */
     public function update(User $user, TaskItem $taskItem)
     {
-        return SubjectPolicy::isTeacherOfSubject($user, $taskItem->task()->first()->lesson()->first()->subject()->first());
+        return $this->isTeacher($user, $taskItem);
     }
 
     /**
@@ -56,6 +57,31 @@ class TaskItemPolicy
      */
     public function delete(User $user, TaskItem $taskItem)
     {
-        return SubjectPolicy::isTeacherOfSubject($user, $taskItem->task()->first()->lesson()->first()->subject()->first());
+        return $this->isTeacher($user, $taskItem);
+    }
+
+    public function isTeacher(User $user, TaskItem $taskItem) {
+        return $user->isTeacher() && !!DB::table('task_items')
+            ->join('tasks', 'tasks.id', '=', 'task_items.task_id')
+            ->join('lessons', 'lessons.id', '=', 'tasks.lesson_id')
+            ->join('subjects', 'subjects.id', '=', 'lessons.subject_id')
+            ->where([
+              ['task_items.id', '=', $taskItem->id],
+              ['subjects.teacher_id', '=', $user->id],
+            ])
+            ->count();
+    }
+
+    public function isStudent(User $user, TaskItem $taskItem) {
+        return !!DB::table('task_items')
+          ->join('tasks', 'tasks.id', '=', 'task_items.task_id')
+          ->join('lessons', 'lessons.id', '=', 'tasks.lesson_id')
+          ->join('subjects', 'subjects.id', '=', 'lessons.subject_id')
+          ->join('subject_user', 'subject_user.subject_id', '=', 'subjects.id')
+          ->where([
+            ['task_items.id', '=', $taskItem->id],
+            ['subject_user.user_id', '=', $user->id],
+          ])
+          ->count();
     }
 }

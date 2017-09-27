@@ -31,12 +31,8 @@ class SubjectPolicy
      */
     public function view(User $user, Subject $subject)
     {
-        if (
-            ($user->isTeacher() && $subject->teacher_id === $user->id) ||
-            !!$user->subjects()->where('subject_id', $subject->id)->count()
-        ) {
-            return true;
-        }
+        return SubjectPolicy::isTeacher($user, $subject) ||
+          $this->isStudent($user, $subject);
     }
 
     /**
@@ -61,9 +57,7 @@ class SubjectPolicy
      */
     public function update(User $user, Subject $subject)
     {
-        if ($user->isTeacher() && $subject->teacher_id === $user->id) {
-            return true;
-        }
+        return SubjectPolicy::isTeacher($user, $subject);
     }
 
     /**
@@ -75,18 +69,12 @@ class SubjectPolicy
      */
     public function delete(User $user, Subject $subject)
     {
-        if ($user->isTeacher() && $subject->teacher_id === $user->id) {
-            return true;
-        }
+        return SubjectPolicy::isTeacher($user, $subject);
     }
 
     public function isTeacher(User $user, Subject $subject)
     {
-        if (
-          ($user->isTeacher() && $subject->teacher_id === $user->id)
-        ) {
-            return true;
-        }
+        return SubjectPolicy::isTeacher($user, $subject);
     }
 
     public static function isTeacherOfSubject(User $user, Subject $subject) {
@@ -96,7 +84,7 @@ class SubjectPolicy
         return false;
     }
 
-    public static function isStudentOfSubject(User $user, Subject $subject) {
+    public function isStudent(User $user, Subject $subject) {
         return !!$user->subjects()->where('subject_id', $subject->id)->count();
     }
 }

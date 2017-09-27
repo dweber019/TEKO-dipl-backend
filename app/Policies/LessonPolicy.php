@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\DB;
 
 class LessonPolicy
 {
@@ -32,7 +33,7 @@ class LessonPolicy
     public function view(User $user, Lesson $lesson)
     {
         return SubjectPolicy::isTeacherOfSubject($user, $lesson->subject()->first()) ||
-          SubjectPolicy::isStudentOfSubject($user, $lesson->subject()->first());
+          $this->isStudent($user, $lesson);
     }
 
     /**
@@ -61,5 +62,16 @@ class LessonPolicy
 
     public function isTeacher(User $user, Lesson $lesson) {
         return SubjectPolicy::isTeacherOfSubject($user, $lesson->subject()->first());
+    }
+
+    public function isStudent(User $user, Lesson $lesson) {
+        return !!DB::table('lessons')
+          ->join('subjects', 'subjects.id', '=', 'lessons.subject_id')
+          ->join('subject_user', 'subject_user.subject_id', '=', 'subjects.id')
+          ->where([
+            ['lessons.id', '=', $lesson->id],
+            ['subject_user.user_id', '=', $user->id],
+          ])
+          ->count();
     }
 }

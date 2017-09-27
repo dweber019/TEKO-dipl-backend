@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\DB;
 
 class TaskPolicy
 {
@@ -31,8 +32,8 @@ class TaskPolicy
      */
     public function view(User $user, Task $task)
     {
-        return SubjectPolicy::isTeacherOfSubject($user, $task->lesson()->first()->subject()->first()) ||
-          SubjectPolicy::isStudentOfSubject($user, $task->lesson()->first()->subject()->first());
+        return $this->isTeacher($user, $task) ||
+          $this->isStudent($user, $task);
     }
 
     /**
@@ -44,7 +45,7 @@ class TaskPolicy
      */
     public function update(User $user, Task $task)
     {
-        return SubjectPolicy::isTeacherOfSubject($user, $task->lesson()->first()->subject()->first());
+        return $this->isTeacher($user, $task);
     }
 
     /**
@@ -56,10 +57,29 @@ class TaskPolicy
      */
     public function delete(User $user, Task $task)
     {
-        return SubjectPolicy::isTeacherOfSubject($user, $task->lesson()->first()->subject()->first());
+        return $this->isTeacher($user, $task);
     }
 
     public function isTeacher(User $user, Task $task) {
-        return SubjectPolicy::isTeacherOfSubject($user, $task->lesson()->first()->subject()->first());
+        return $user->isTeacher() && !!DB::table('tasks')
+          ->join('lessons', 'lessons.id', '=', 'tasks.lesson_id')
+          ->join('subjects', 'subjects.id', '=', 'lessons.subject_id')
+          ->where([
+            ['tasks.id', '=', $task->id],
+            ['subjects.teacher_id', '=', $user->id],
+          ])
+          ->count();
+    }
+
+    public function isStudent(User $user, Task $task) {
+        return !!DB::table('tasks')
+          ->join('lessons', 'lessons.id', '=', 'tasks.lesson_id')
+          ->join('subjects', 'subjects.id', '=', 'lessons.subject_id')
+          ->join('subject_user', 'subject_user.subject_id', '=', 'subjects.id')
+          ->where([
+            ['tasks.id', '=', $task->id],
+            ['subject_user.user_id', '=', $user->id],
+          ])
+          ->count();
     }
 }
