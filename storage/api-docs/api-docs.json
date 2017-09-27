@@ -47,6 +47,33 @@
   "consumes": [
     "application/json"
   ],
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    },
+    "oauth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://dipl.eu.auth0.com/authorize?audience=http://127.0.0.1:8000",
+      "flow": "implicit",
+      "scopes": {
+        "openid": "Standard Scope",
+        "profile": "Get the users profile"
+      }
+    }
+  },
+  "security": [
+    {
+      "api_key": []
+    },
+    {
+      "oauth": [
+        "openid",
+        "profile"
+      ]
+    }
+  ],
   "paths": {
     "/users": {
       "get": {
@@ -719,6 +746,7 @@
           "Feed",
           "Benutzer"
         ],
+        "security": [],
         "summary": "Feed eines Benutzers an hand des Tokens",
         "produces": [
           "text/calendar"

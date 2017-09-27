@@ -13,13 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
-\Illuminate\Support\Facades\Auth::loginUsingId(2);
-
-
 /*
  * User related routes
  */
-Route::prefix('users')->group(function () {
+Route::middleware(['auth:api'])->prefix('users')->group(function () {
     Route::get('{user}/groups', 'UserController@groupsIndex');
 
     Route::get('{user}/subjects', 'UserController@subjectsIndex');
@@ -34,18 +31,18 @@ Route::prefix('users')->group(function () {
 });
 Route::resource('users', 'UserController', ['except' => [
   'create', 'edit'
-]]);
+]])->middleware('auth:api');
 
 /*
  * Feed & Agenda
  */
-Route::get('agenda', 'UserController@agendaIndex');
+Route::get('agenda', 'UserController@agendaIndex')->middleware('auth:api');
 Route::get('feed/{token}', 'UserController@feedIndex');
 
 /*
  * Group related routes
  */
-Route::prefix('groups')->group(function () {
+Route::middleware(['auth:api'])->prefix('groups')->group(function () {
     Route::get('{group}/users', 'GroupController@usersIndex');
     Route::post('{group}/users/{user}', 'GroupController@usersStore');
     Route::delete('{group}/users/{user}', 'GroupController@usersDestroy');
@@ -54,12 +51,12 @@ Route::prefix('groups')->group(function () {
 });
 Route::resource('groups', 'GroupController', ['except' => [
   'create', 'edit'
-]]);
+]])->middleware('auth:api');
 
 /*
  * Subject related routes
  */
-Route::prefix('subjects')->group(function () {
+Route::middleware(['auth:api'])->prefix('subjects')->group(function () {
     Route::get('{subject}/lessons', 'SubjectController@lessonsIndex');
     Route::post('{subject}/lessons', 'SubjectController@lessonsStore');
 
@@ -73,12 +70,12 @@ Route::prefix('subjects')->group(function () {
 });
 Route::resource('subjects', 'SubjectController', ['except' => [
   'create', 'edit'
-]]);
+]])->middleware('auth:api');
 
 /*
  * Lessons related routes
  */
-Route::prefix('lessons')->group(function () {
+Route::middleware(['auth:api'])->prefix('lessons')->group(function () {
     Route::get('{lesson}/tasks', 'LessonController@tasksIndex');
     Route::post('{lesson}/tasks', 'LessonController@tasksStore');
 
@@ -90,12 +87,12 @@ Route::prefix('lessons')->group(function () {
 });
 Route::resource('lessons', 'LessonController', ['except' => [
   'create', 'edit', 'store', 'index'
-]]);
+]])->middleware('auth:api');
 
 /*
  * Tasks related routes
  */
-Route::prefix('tasks')->group(function () {
+Route::middleware(['auth:api'])->prefix('tasks')->group(function () {
     Route::get('{task}/taskitems', 'TaskController@taskItemsIndex');
     Route::post('{task}/taskitems', 'TaskController@taskItemsStore');
 
@@ -109,22 +106,22 @@ Route::prefix('tasks')->group(function () {
 });
 Route::resource('tasks', 'TaskController', ['except' => [
   'create', 'edit', 'store', 'index'
-]]);
+]])->middleware('auth:api');
 
 /*
  * Task Items related routes
  */
-Route::prefix('taskitems')->group(function () {
+Route::middleware(['auth:api'])->prefix('taskitems')->group(function () {
     Route::get('{taskItem}/work', 'TaskItemController@workIndex');
     Route::put('{taskItem}/work', 'TaskItemController@workUpdate');
 });
 Route::resource('taskitems', 'TaskItemController', ['except' => [
   'create', 'edit', 'store', 'index', 'show'
-]]);
+]])->middleware('auth:api');
 
 /*
  * Comments related routes
  */
 Route::resource('comments', 'CommentsController', ['except' => [
   'create', 'edit', 'store', 'index', 'show'
-]]);
+]])->middleware('auth:api');
