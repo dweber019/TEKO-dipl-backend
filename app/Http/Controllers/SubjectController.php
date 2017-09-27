@@ -43,6 +43,8 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Subject::class);
+
         $attributes = $request->validate([
           'name' => 'required|string',
           'archived' => 'required|boolean',
@@ -62,6 +64,8 @@ class SubjectController extends Controller
      */
     public function show(Subject $subject)
     {
+        $this->authorize('view', $subject);
+
         $currentUser = Auth::user();
 
         if ($currentUser->isNotStudent()) {
@@ -86,6 +90,8 @@ class SubjectController extends Controller
      */
     public function update(Request $request, Subject $subject)
     {
+        $this->authorize('update', $subject);
+
         $attributes = $request->validate([
           'name' => 'required|string',
           'archived' => 'required|boolean',
@@ -105,6 +111,8 @@ class SubjectController extends Controller
      */
     public function destroy(Subject $subject)
     {
+        $this->authorize('delete', $subject);
+
         $subject->delete();
         return response('', Response::HTTP_NO_CONTENT);
     }
@@ -117,6 +125,8 @@ class SubjectController extends Controller
      */
     public function lessonsIndex(Subject $subject)
     {
+        $this->authorize('view', $subject);
+
         $currentUser = Auth::user();
 
         if ($currentUser->isNotStudent()) {
@@ -141,6 +151,8 @@ class SubjectController extends Controller
      */
     public function lessonsStore(Request $request, Subject $subject)
     {
+        $this->authorize('isTeacher', $subject);
+
         $attributes = $request->validate([
           'start_date' => 'required|date|after:now',
           'end_date' => 'required|date|after:start_date',
@@ -168,7 +180,15 @@ class SubjectController extends Controller
      */
     public function gradesIndex(Subject $subject)
     {
-        return GradeUserResource::collection($subject->userGrades()->get());
+        $this->authorize('view', $subject);
+
+        $currentUser = Auth::user();
+
+        if ($currentUser->isNotStudent()) {
+            return GradeUserResource::collection($subject->userGrades()->get());
+        }
+
+        return GradeUserResource::collection($subject->userGrades()->where('user_id', $currentUser->id)->get());
     }
 
     /**
@@ -181,6 +201,8 @@ class SubjectController extends Controller
      */
     public function gradesStore(Request $request, Subject $subject, User $user)
     {
+        $this->authorize('isTeacher', $subject);
+
         $attributes = $request->validate([
           'grade' => 'required|numeric',
         ]);
@@ -198,6 +220,8 @@ class SubjectController extends Controller
      */
     public function gradesDestroy(Subject $subject, User $user)
     {
+        $this->authorize('isTeacher', $subject);
+
         $subject->userGrades()->detach($user->id);
         return response('', Response::HTTP_NO_CONTENT);
     }
@@ -210,6 +234,8 @@ class SubjectController extends Controller
      */
     public function usersIndex(Subject $subject)
     {
+        $this->authorize('view', $subject);
+
         return UserResource::collection($subject->users()->get());
     }
 
@@ -223,6 +249,8 @@ class SubjectController extends Controller
      */
     public function usersStore(Request $request, Subject $subject, User $user)
     {
+        $this->authorize('isTeacher', $subject);
+
         $subject->users()->attach($user->id);
         return response('', Response::HTTP_CREATED);
     }
@@ -236,6 +264,8 @@ class SubjectController extends Controller
      */
     public function usersDestroy(Subject $subject, User $user)
     {
+        $this->authorize('isTeacher', $subject);
+
         $subject->users()->detach($user->id);
         return response('', Response::HTTP_NO_CONTENT);
     }

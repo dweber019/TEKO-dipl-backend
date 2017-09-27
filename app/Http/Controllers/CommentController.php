@@ -17,6 +17,8 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
+        $this->authorize('update', $comment);
+
         $attributes = $request->validate([
           'message' => 'required|string',
         ]);
@@ -34,6 +36,8 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
+        $this->authorize('delete', $comment);
+
         $comment->delete();
         return response('', Response::HTTP_NO_CONTENT);
     }

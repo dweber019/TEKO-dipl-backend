@@ -29,6 +29,8 @@ class UserController extends Controller
      */
     public function index()
     {
+        $this->authorize('view', User::class);
+
         return UserResource::collection(User::all());
     }
 
@@ -40,6 +42,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
+
         $attributes = $request->validate([
           'firstname' => 'string|nullable',
           'lastname' => 'string|nullable',
@@ -63,6 +67,8 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        $this->authorize('view', User::class);
+
         return new UserResource($user);
     }
 
@@ -75,6 +81,8 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        $this->authorize('update', $user);
+
         $attributes = $request->validate([
           'firstname' => 'string',
           'lastname' => 'string',
@@ -97,6 +105,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
+
         $user->delete();
         return response('', Response::HTTP_NO_CONTENT);
     }
@@ -109,6 +119,8 @@ class UserController extends Controller
      */
     public function groupsIndex(User $user)
     {
+        $this->authorize('view', User::class);
+
         return GroupResource::collection($user->groups()->get());
     }
 
@@ -120,6 +132,8 @@ class UserController extends Controller
      */
     public function subjectsIndex(User $user)
     {
+        $this->authorize('self', $user);
+
         $subjects = $user->subjects()->with([ 'lessons.tasks.users' => function ($query) use ($user) {
             $query->where('user_id', '=', $user->id);
         } ])->get();
@@ -137,6 +151,7 @@ class UserController extends Controller
      */
     public function notificationsIndex(User $user)
     {
+        $this->authorize('self', $user);
 
         return NotificationResource::collection($user->notifications()->get());
     }
@@ -149,6 +164,8 @@ class UserController extends Controller
      */
     public function gradesIndex(User $user)
     {
+        $this->authorize('self', $user);
+
         return GradeResource::collection($user->grades()->get());
     }
 
@@ -186,6 +203,8 @@ class UserController extends Controller
      */
     public function chatsIndex(User $user)
     {
+        $this->authorize('self', $user);
+
         $asSender = $user->senderChat()->get();
         $asReceiver = $user->receiverChat()->get();
 
@@ -201,6 +220,8 @@ class UserController extends Controller
      */
     public function chatsStore(Request $request, User $user)
     {
+        $this->authorize('self', $user);
+
         $attributes = $request->validate([
           'message' => 'required|string',
           'sender_id' => 'required|integer|exists:users',
@@ -221,6 +242,8 @@ class UserController extends Controller
      */
     public function chatsDestroy(User $user, User $user2)
     {
+        $this->authorize('self', $user);
+
         DB::table('chats')
           ->where([
             ['sender_id', '=', $user->id],

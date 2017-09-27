@@ -70,7 +70,7 @@ class GroupPolicy
      */
     public function addUser(User $user, Group $group)
     {
-        if ($user->isAdmin() || $user->isTeacher()) {
+        if ($user->isTeacher()) {
             return true;
         }
     }
@@ -82,7 +82,7 @@ class GroupPolicy
      */
     public function removeUser(User $user, Group $group)
     {
-        if ($user->isAdmin() || $user->isTeacher()) {
+        if ($user->isTeacher()) {
             return true;
         }
     }

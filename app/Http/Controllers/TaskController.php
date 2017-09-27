@@ -27,6 +27,8 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
+        $this->authorize('view', $task);
+
         $currentUser = Auth::user();
 
         if ($currentUser->isNotStudent()) {
@@ -51,6 +53,8 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
+        $this->authorize('isTeacher', $task);
+
         $attributes = $request->validate([
           'name' => 'required|string',
           'description' => 'string|nullable',
@@ -70,6 +74,8 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        $this->authorize('isTeacher', $task);
+
         $task->delete();
         return response('', Response::HTTP_NO_CONTENT);
     }
@@ -82,6 +88,8 @@ class TaskController extends Controller
      */
     public function taskItemsIndex(Task $task)
     {
+        $this->authorize('view', $task);
+
         return TaskItemResource::collection($task->taskItems()->get());
     }
 
@@ -94,6 +102,8 @@ class TaskController extends Controller
      */
     public function taskItemsStore(Request $request, Task $task)
     {
+        $this->authorize('isTeacher', $task);
+
         $attributes = $request->validate([
           'title' => 'required|string',
           'description' => 'string|nullable',
@@ -120,6 +130,8 @@ class TaskController extends Controller
      */
     public function noteIndex(Task $task)
     {
+        $this->authorize('view', $task);
+
         $currentUser = Auth::user();
         $note = $task->notes()->where('user_id', $currentUser->id)->first();
         return new NoteResource($note);
@@ -134,6 +146,8 @@ class TaskController extends Controller
      */
     public function noteUpdate(Request $request, Task $task)
     {
+        $this->authorize('view', $task);
+
         $attributes = $request->validate([
           'note' => 'required|string',
         ]);
@@ -159,6 +173,8 @@ class TaskController extends Controller
      */
     public function commentsIndex(Task $task)
     {
+        $this->authorize('view', $task);
+
         return CommentResource::collection($task->comments()->get());
     }
 
@@ -171,6 +187,8 @@ class TaskController extends Controller
      */
     public function commentsStore(Request $request, Task $task)
     {
+        $this->authorize('view', $task);
+
         $attributes = $request->validate([
           'message' => 'required|string',
         ]);
@@ -192,6 +210,8 @@ class TaskController extends Controller
      */
     public function doneUpdate(Request $request, Task $task)
     {
+        $this->authorize('view', $task);
+
         $currentUser = $request->user();
 
         $task->users()->attach($currentUser->id, [ 'done' => true ]);
