@@ -25,7 +25,16 @@ class SmallSchool extends Seeder
         ))->save();
 
         $students = factory(App\Models\User::class, 20)->create();
+
+        $student = $students[0];
+        $student->invite_email = 'david.weber@w3tec.ch';
+        $student->save();
+
         $teachers = factory(App\Models\User::class, 'teacher', 3)->create();
+
+        $teacher = $teachers[0];
+        $teacher->invite_email = 'dweber@openwt.com';
+        $teacher->save();
 
         /**
          * Create some Groups
