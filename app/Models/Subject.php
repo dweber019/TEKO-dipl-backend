@@ -12,7 +12,7 @@ class Subject extends Model
      * @var array
      */
     protected $fillable = [
-      'name', 'archived',
+      'name', 'archived', 'teacher_id',
     ];
 
     /**

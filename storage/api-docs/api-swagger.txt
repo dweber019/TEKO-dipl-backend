@@ -91,7 +91,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/User"
@@ -290,7 +290,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Chat"
@@ -441,23 +441,21 @@
         }
       }
     },
-    "/users/{id}/agenda": {
+    "/agenda": {
       "get": {
         "tags": [
           "Benutzer",
           "Agenda"
         ],
         "summary": "Die Agenda eines Benutzers",
-        "parameters": [
-          {
-            "$ref": "#/parameters/ID"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Erfolgreich",
             "schema": {
-              "$ref": "#/definitions/Timestamps"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Agenda"
+              }
             }
           },
           "401": {
@@ -515,7 +513,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Group"
@@ -731,6 +729,9 @@
           "Benutzer"
         ],
         "summary": "Feed eines Benutzers an hand des Tokens",
+        "produces": [
+          "text/calendar"
+        ],
         "parameters": [
           {
             "name": "token",
@@ -742,12 +743,9 @@
         ],
         "responses": {
           "200": {
-            "description": "Erfolgreich",
+            "description": "Download iCal Datei",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Timestamps"
-              }
+              "type": "file"
             }
           },
           "404": {
@@ -802,7 +800,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Subject"
@@ -967,7 +965,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Lesson"
@@ -1193,31 +1191,6 @@
 
     # Lessons ---------------------------------------------------------------------
 
-    "/lessons": {
-      "get": {
-        "tags": [
-          "Unterricht"
-        ],
-        "summary": "Alle Unterricht",
-        "responses": {
-          "200": {
-            "description": "Erfolgreich",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Lesson"
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/responses/Unauthorized"
-          },
-          "500": {
-            "$ref": "#/responses/ServerError"
-          }
-        }
-      }
-    },
     "/lessons/{id}": {
       "get": {
         "tags": [
@@ -1365,7 +1338,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Task"
@@ -1504,7 +1477,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Comment"
@@ -1525,31 +1498,6 @@
 
     # Tasks ---------------------------------------------------------------------
 
-    "/tasks": {
-      "get": {
-        "tags": [
-          "Aufgaben"
-        ],
-        "summary": "Alle Aufgaben",
-        "responses": {
-          "200": {
-            "description": "Erfolgreich",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Task"
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/responses/Unauthorized"
-          },
-          "500": {
-            "$ref": "#/responses/ServerError"
-          }
-        }
-      }
-    },
     "/tasks/{id}": {
       "get": {
         "tags": [
@@ -1765,7 +1713,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/Comment"
@@ -1864,7 +1812,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Erfolgreich",
             "schema": {
               "$ref": "#/definitions/TaskItem"
@@ -2143,6 +2091,14 @@
         },
         "lastname": {
           "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "student",
+            "teacher",
+            "admin"
+          ]
         }
       }
     },
@@ -2230,7 +2186,7 @@
           "type": "integer"
         },
         "message": {
-          "type": "integer"
+          "type": "string"
         }
       }
     },
@@ -2243,6 +2199,14 @@
         },
         {
           "$ref": "#/definitions/SubjectPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "boolean"
+            }
+          }
         },
         {
           "$ref": "#/definitions/Timestamps"
@@ -2357,6 +2321,23 @@
       ]
     },
 
+    "Agenda": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Lesson"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+
     "Lesson": {
       "type": "object",
       "allOf": [
@@ -2365,6 +2346,17 @@
         },
         {
           "$ref": "#/definitions/LessonPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "subjectId": {
+              "type": "integer"
+            },
+            "status": {
+              "type": "boolean"
+            }
+          }
         },
         {
           "$ref": "#/definitions/Timestamps"
@@ -2390,15 +2382,20 @@
         "location": {
           "type": "string"
         },
-        "map": {
+        "room": {
           "type": "string"
         },
         "canceled": {
           "type": "boolean",
           "default": false
         },
-        "subjectId": {
-          "type": "integer"
+        "type": {
+          "type": "string",
+          "enum": [
+            "lesson",
+            "exam",
+            "reminder"
+          ]
         }
       }
     },
@@ -2474,6 +2471,9 @@
           "properties": {
             "lessonId": {
               "type": "integer"
+            },
+            "status": {
+              "type": "boolean"
             }
           }
         },

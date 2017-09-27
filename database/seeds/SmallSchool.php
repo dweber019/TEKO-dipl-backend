@@ -30,6 +30,19 @@ class SmallSchool extends Seeder
         /**
          * Create some Groups
          */
+        $notificationsNotRead = factory(App\Models\Notification::class, 5)->create();
+        $notificationsRead = factory(App\Models\Notification::class, 5)->create();
+
+        foreach ($notificationsNotRead as &$notification) {
+            $notification->users()->attach($students[0], ['read' => false]);
+        }
+        foreach ($notificationsRead as &$notification) {
+            $notification->users()->attach($students[0], ['read' => true]);
+        }
+
+        /**
+         * Create some Groups
+         */
         $group1A = factory(App\Models\Group::class)->create([ 'name' => '1A' ]);
         $group1B = factory(App\Models\Group::class)->create([ 'name' => '1B' ]);
         $group1C = factory(App\Models\Group::class)->create([ 'name' => '1C' ]);

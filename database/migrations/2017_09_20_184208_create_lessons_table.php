@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use \App\Helpers\LessonTypes;
 
 class CreateLessonsTable extends Migration
 {
@@ -17,6 +18,7 @@ class CreateLessonsTable extends Migration
             $table->increments('id');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
+            $table->enum('type', LessonTypes::toArray())->default(LessonTypes::LESSON);
             $table->string('location')->nullable();
             $table->string('room')->nullable();
             $table->boolean('canceled')->default(false);

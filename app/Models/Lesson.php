@@ -21,7 +21,7 @@ class Lesson extends Model
      * @var array
      */
     protected $fillable = [
-      'start_date', 'end_date', 'location', 'room', 'canceled',
+      'start_date', 'end_date', 'location', 'room', 'canceled', 'subject_id', 'type',
     ];
 
     /**

@@ -3,83 +3,116 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\User as UserResource;
+use App\Http\Resources\Group as GroupResource;
 
 class GroupController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return GroupResource::collection(Group::all());
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function store(Request $request)
     {
-        //
+        $attributes = $request->validate([
+          'name' => 'required|string',
+        ]);
+
+        $group = tap(new Group($attributes))->save();
+
+        return (new GroupResource($group));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Group  $group
-     * @return \Illuminate\Http\Response
+     * @param  \App\Models\Group  $group
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function show(Group $group)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Group  $group
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Group $group)
-    {
-        //
+        return new GroupResource($group);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Group  $group
-     * @return \Illuminate\Http\Response
+     * @param  \App\Models\Group  $group
+     * @return \Illuminate\Http\Resources\Json\Resource
      */
     public function update(Request $request, Group $group)
     {
-        //
+        $attributes = $request->validate([
+          'name' => 'required|string',
+        ]);
+
+        $group = tap($group->fill($attributes))->save();
+
+        return new GroupResource($group);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Group  $group
+     * @param  \App\Models\Group  $group
      * @return \Illuminate\Http\Response
      */
     public function destroy(Group $group)
     {
-        //
+        $group->delete();
+        return response('', Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Group  $group
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function usersIndex(Group $group)
+    {
+        return UserResource::collection($group->users()->get());
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Models\Group  $group
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function usersStore(Group $group, User $user)
+    {
+        $group->users()->attach($user);
+        return response('', Response::HTTP_CREATED);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Group  $group
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function usersDestroy(Group $group, User $user)
+    {
+        $group->users()->detach($user);
+        return response('', Response::HTTP_NO_CONTENT);
     }
 }

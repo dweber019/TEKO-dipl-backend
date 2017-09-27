@@ -14,6 +14,8 @@ class UsersNotificationsTable extends Migration
     public function up()
     {
         Schema::create('notification_user', function (Blueprint $table) {
+            $table->increments('id');
+
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')
               ->on('users')->onDelete('cascade');
