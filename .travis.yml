@@ -1,6 +1,8 @@
 language: php
 php:
   - '7.1'
+notifications:
+  email: false
 
 env:
   - DB_CONNECTION=sqlite_testing
