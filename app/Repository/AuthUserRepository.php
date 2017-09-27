@@ -10,6 +10,7 @@ namespace App\Repository;
 
 use App\Models\User;
 use Auth0\Login\Contract\Auth0UserRepository;
+use Auth0\Login\facade\Auth0;
 use Illuminate\Auth\AuthenticationException;
 
 class AuthUserRepository implements Auth0UserRepository
