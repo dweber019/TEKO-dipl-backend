@@ -22,6 +22,8 @@ class TaskItemController extends Controller
      */
     public function update(Request $request, TaskItem $taskItem)
     {
+        $this->authorize('update', $taskItem);
+
         $attributes = $request->validate([
           'title' => 'required|string',
           'description' => 'string|nullable',
@@ -46,6 +48,8 @@ class TaskItemController extends Controller
      */
     public function destroy(TaskItem $taskItem)
     {
+        $this->authorize('delete', $taskItem);
+
         $taskItem->delete();
         return response('', Response::HTTP_NO_CONTENT);
     }
@@ -58,6 +62,8 @@ class TaskItemController extends Controller
      */
     public function workIndex(TaskItem $taskItem)
     {
+        $this->authorize('view', $taskItem);
+
         $currentUser = Auth::user();
 
         $work = $taskItem->users()->where('user_id', $currentUser->id)->first();
@@ -74,6 +80,8 @@ class TaskItemController extends Controller
      */
     public function workUpdate(Request $request, TaskItem $taskItem)
     {
+        $this->authorize('view', $taskItem);
+
         $attributes = $request->validate([
           'result' => 'required|string'
         ]);

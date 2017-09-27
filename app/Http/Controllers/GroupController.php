@@ -29,6 +29,8 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Group::class);
+
         $attributes = $request->validate([
           'name' => 'required|string',
         ]);
@@ -58,6 +60,8 @@ class GroupController extends Controller
      */
     public function update(Request $request, Group $group)
     {
+        $this->authorize('update', $group);
+
         $attributes = $request->validate([
           'name' => 'required|string',
         ]);
@@ -75,6 +79,8 @@ class GroupController extends Controller
      */
     public function destroy(Group $group)
     {
+        $this->authorize('delete', $group);
+
         $group->delete();
         return response('', Response::HTTP_NO_CONTENT);
     }
@@ -99,6 +105,8 @@ class GroupController extends Controller
      */
     public function usersStore(Group $group, User $user)
     {
+        $this->authorize('addUser', $group);
+
         $group->users()->attach($user);
         return response('', Response::HTTP_CREATED);
     }
@@ -112,6 +120,8 @@ class GroupController extends Controller
      */
     public function usersDestroy(Group $group, User $user)
     {
+        $this->authorize('removeUser', $group);
+
         $group->users()->detach($user);
         return response('', Response::HTTP_NO_CONTENT);
     }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 
 use Auth0\SDK\Helpers\Cache\CacheHandler as CacheHandler;
 use Auth0\Login\Contract\Auth0UserRepository as Auth0UserRepositoryContract;
+use Auth0\Login\Repository\Auth0UserRepository as Auth0UserRepository;
 use App\Repository\AuthUserRepository;
 
 class AppServiceProvider extends ServiceProvider

@@ -10,6 +10,7 @@ namespace App\Repository;
 
 use App\Models\User;
 use Auth0\Login\Contract\Auth0UserRepository;
+use Auth0\Login\facade\Auth0;
 use Illuminate\Auth\AuthenticationException;
 
 class AuthUserRepository implements Auth0UserRepository
@@ -35,7 +36,23 @@ class AuthUserRepository implements Auth0UserRepository
 
         if ($user === null) {
 
-            $user = User::where("invite_email", $profile->email)->first();
+            $authHeader = request()->headers->get('Authorization');
+
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request('GET', 'https://' . config('laravel-auth0.domain') .'/userinfo', [
+              'headers' => [
+                'Authorization' => $authHeader,
+                'Accept'     => 'application/json',
+              ]
+            ]);
+
+            if($res->getStatusCode() !== 200) {
+                throw new AuthenticationException('Unauthorized');
+            }
+
+            $userInfo = json_decode($res->getBody());
+
+            $user = User::where("invite_email", $userInfo->email)->first();
 
             if ($user !== null) {
                 $user->auth0_id = $profile->user_id;

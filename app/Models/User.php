@@ -43,6 +43,14 @@ class User extends Authenticatable
         return $this->type !== UserTypes::STUDENT;
     }
 
+    public function isAdmin() {
+        return $this->type === UserTypes::ADMIN;
+    }
+
+    public function isTeacher() {
+        return $this->type === UserTypes::TEACHER;
+    }
+
     /**
      * The groups that belong to the user.
      */

@@ -27,6 +27,8 @@ class LessonController extends Controller
      */
     public function show(Lesson $lesson)
     {
+        $this->authorize('view', $lesson);
+
         $currentUser = Auth::user();
 
         if ($currentUser->isNotStudent()) {
@@ -51,6 +53,8 @@ class LessonController extends Controller
      */
     public function update(Request $request, Lesson $lesson)
     {
+        $this->authorize('isTeacher', $lesson);
+
         $attributes = $request->validate([
           'start_date' => 'required|date|after:now',
           'end_date' => 'required|date|after:start_date',
@@ -76,6 +80,8 @@ class LessonController extends Controller
      */
     public function destroy(Lesson $lesson)
     {
+        $this->authorize('isTeacher', $lesson);
+
         $lesson->delete();
         return response('', Response::HTTP_NO_CONTENT);
     }
@@ -88,6 +94,8 @@ class LessonController extends Controller
      */
     public function tasksIndex(Lesson $lesson)
     {
+        $this->authorize('view', $lesson);
+
         $currentUser = Auth::user();
 
         if ($currentUser->isNotStudent()) {
@@ -112,6 +120,8 @@ class LessonController extends Controller
      */
     public function tasksStore(Request $request, Lesson $lesson)
     {
+        $this->authorize('isTeacher', $lesson);
+
         $attributes = $request->validate([
           'name' => 'required|string',
           'description' => 'string|nullable',
@@ -134,6 +144,8 @@ class LessonController extends Controller
      */
     public function noteIndex(Request $request, Lesson $lesson)
     {
+        $this->authorize('view', $lesson);
+
         $currentUser = $request->user();
         $note = $lesson->notes()->where('user_id', $currentUser->id)->first();
         return new NoteResource($note);
@@ -148,6 +160,8 @@ class LessonController extends Controller
      */
     public function noteUpdate(Request $request, Lesson $lesson)
     {
+        $this->authorize('view', $lesson);
+
         $attributes = $request->validate([
           'note' => 'required|string',
         ]);
@@ -173,6 +187,8 @@ class LessonController extends Controller
      */
     public function commentsIndex(Lesson $lesson)
     {
+        $this->authorize('view', $lesson);
+
         return CommentResource::collection($lesson->comments()->get());
     }
 
@@ -185,6 +201,8 @@ class LessonController extends Controller
      */
     public function commentsStore(Request $request, Lesson $lesson)
     {
+        $this->authorize('view', $lesson);
+
         $attributes = $request->validate([
           'message' => 'required|string',
         ]);
