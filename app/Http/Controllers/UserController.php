@@ -29,8 +29,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        $this->authorize('view', User::class);
-
         return UserResource::collection(User::all());
     }
 
@@ -67,7 +65,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $this->authorize('view', User::class);
+        $this->authorize('view', $user);
 
         return new UserResource($user);
     }
@@ -119,7 +117,7 @@ class UserController extends Controller
      */
     public function groupsIndex(User $user)
     {
-        $this->authorize('view', User::class);
+        $this->authorize('view', $user);
 
         return GroupResource::collection($user->groups()->get());
     }
