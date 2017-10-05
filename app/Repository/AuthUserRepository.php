@@ -56,6 +56,7 @@ class AuthUserRepository implements Auth0UserRepository
 
             if ($user !== null) {
                 $user->auth0_id = $profile->user_id;
+                $user->picture = $userInfo->picture;
                 $user->save();
             } else {
                 throw new AuthenticationException('Unauthorized');

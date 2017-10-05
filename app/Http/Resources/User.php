@@ -16,13 +16,15 @@ class User extends Resource
     public function toArray($request)
     {
         $currentUser = Auth::user();
+        $baseUrl = url('/');
 
         return [
           'id' => $this->id,
-          'firstname' => $this->fistname,
+          'firstname' => $this->firstname,
           'lastname' => $this->lastname,
           'type' => $this->type,
           'calenderToken' => $currentUser->id !== $this->id ? null : $this->calender_token,
+          'picture' => $this->picture !== null ? $this->picture : $baseUrl . '/avatar.png',
           'createdAt' => is_null($this->created_at) ? null : $this->created_at->toDateTimeString(),
           'updatedAt' => is_null($this->updated_at) ? null : $this->updated_at->toDateTimeString(),
         ];

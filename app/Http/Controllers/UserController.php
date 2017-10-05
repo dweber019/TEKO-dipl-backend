@@ -90,6 +90,10 @@ class UserController extends Controller
           ],
         ]);
 
+        if (!Auth::user()->isAdmin()) {
+            unset($attributes['type']);
+        }
+
         $user = tap($user->fill($attributes))->save();
 
         return new UserResource($user);
@@ -107,6 +111,18 @@ class UserController extends Controller
 
         $user->delete();
         return response('', Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Display the token user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function meIndex()
+    {
+        $user = Auth::user();
+
+        return new UserResource($user);
     }
 
     /**
@@ -203,8 +219,8 @@ class UserController extends Controller
     {
         $this->authorize('self', $user);
 
-        $asSender = $user->senderChat()->get();
-        $asReceiver = $user->receiverChat()->get();
+        $asSender = $user->senderChat()->with(['sender', 'receiver'])->get();
+        $asReceiver = $user->receiverChat()->with(['sender', 'receiver'])->get();
 
         return ChatResource::collection(collect($asSender)->merge($asReceiver));
     }
@@ -222,9 +238,11 @@ class UserController extends Controller
 
         $attributes = $request->validate([
           'message' => 'required|string',
-          'sender_id' => 'required|integer|exists:users',
-          'receiver_id' => 'required|integer|exists:users',
+          'sender_id' => 'required|integer|exists:users,id',
+          'receiver_id' => 'required|integer|exists:users,id',
         ]);
+
+        $attributes['sender_id'] = $user->id;
 
         $chat = tap(new Chat($attributes))->save();
 
@@ -254,6 +272,26 @@ class UserController extends Controller
           ->delete();
 
         return response('', Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @param Chat $chat
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
+     */
+    public function chatsRead(User $user, User $user2)
+    {
+        DB::table('chats')
+          ->where([
+            ['sender_id', '=', $user->id],
+            ['receiver_id', '=', $user2->id],
+          ])
+          ->orWhere([
+            ['sender_id', '=', $user2->id],
+            ['receiver_id', '=', $user->id],
+          ])
+          ->update(['read' => true]);
+
+        return response('', Response::HTTP_OK);
     }
 
     /**

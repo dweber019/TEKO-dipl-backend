@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
  * User related routes
  */
 Route::middleware(['auth:api'])->prefix('users')->group(function () {
+    Route::get('me', 'UserController@meIndex');
+
     Route::get('{user}/groups', 'UserController@groupsIndex');
 
     Route::get('{user}/subjects', 'UserController@subjectsIndex');
@@ -27,6 +29,7 @@ Route::middleware(['auth:api'])->prefix('users')->group(function () {
 
     Route::get('{user}/chats', 'UserController@chatsIndex');
     Route::post('{user}/chats', 'UserController@chatsStore');
+    Route::post('{user}/chats/{user2}/read', 'UserController@chatsRead');
     Route::delete('{user}/chats/{user2}', 'UserController@chatsDestroy');
 });
 Route::resource('users', 'UserController', ['except' => [

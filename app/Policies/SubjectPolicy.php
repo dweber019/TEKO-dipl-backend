@@ -31,7 +31,7 @@ class SubjectPolicy
      */
     public function view(User $user, Subject $subject)
     {
-        return SubjectPolicy::isTeacher($user, $subject) ||
+        return $this->isTeacher($user, $subject) ||
           $this->isStudent($user, $subject);
     }
 
@@ -57,7 +57,7 @@ class SubjectPolicy
      */
     public function update(User $user, Subject $subject)
     {
-        return SubjectPolicy::isTeacher($user, $subject);
+        return $this->isTeacher($user, $subject);
     }
 
     /**
@@ -69,12 +69,12 @@ class SubjectPolicy
      */
     public function delete(User $user, Subject $subject)
     {
-        return SubjectPolicy::isTeacher($user, $subject);
+        return $this->isTeacher($user, $subject);
     }
 
     public function isTeacher(User $user, Subject $subject)
     {
-        return SubjectPolicy::isTeacher($user, $subject);
+        return SubjectPolicy::isTeacherOfSubject($user, $subject);
     }
 
     public static function isTeacherOfSubject(User $user, Subject $subject) {

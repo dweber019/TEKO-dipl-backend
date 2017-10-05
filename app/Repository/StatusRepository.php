@@ -20,21 +20,29 @@ class StatusRepository
 
     public static function getStatusOfSubject(Subject $subject)
     {
-        $status = true;
+        $status = 'done';
 
-        foreach ($subject->lessons->toArray() as &$lesson) {
-            foreach ($lesson['tasks'] as &$task) {
-                if (empty($task['users'])) {
-                    $status = false;
-                    break;
-                }
+        if (empty($subject->lessons->toArray())) {
+            $status = 'notask';
+        } else {
+            foreach ($subject->lessons->toArray() as &$lesson) {
+                if (empty($lesson['tasks'])) {
+                    $status = 'notask';
+                } else {
+                    foreach ($lesson['tasks'] as &$task) {
+                        if (empty($task['users'])) {
+                            $status = 'open';
+                            break;
+                        }
 
-                if ($task['users'][0]['pivot']['done'] === 0) {
-                    $status = false;
-                    break;
+                        if ($task['users'][0]['pivot']['done'] === 0) {
+                            $status = 'open';
+                            break;
+                        }
+                    }
                 }
-            }
-        };
+            };
+        }
 
         $subject->setAttribute('status', $status);
 
@@ -52,19 +60,23 @@ class StatusRepository
 
     public static function getStatusOfLesson(Lesson $lesson)
     {
-        $status = true;
+        $status = 'done';
 
         $lessonTemp = $lesson->toArray();
 
-        foreach ($lessonTemp['tasks'] as &$task) {
-            if (empty($task['users'])) {
-                $status = false;
-                break;
-            }
+        if (empty($lessonTemp['tasks'])) {
+            $status = 'notask';
+        } else {
+            foreach ($lessonTemp['tasks'] as &$task) {
+                if (empty($task['users'])) {
+                    $status = 'open';
+                    break;
+                }
 
-            if ($task['users'][0]['pivot']['done'] === 0) {
-                $status = false;
-                break;
+                if ($task['users'][0]['pivot']['done'] === 0) {
+                    $status = 'open';
+                    break;
+                }
             }
         }
 
@@ -84,14 +96,14 @@ class StatusRepository
 
     public static function getStatusOfTask(Task $task)
     {
-        $status = true;
+        $status = 'done';
 
         $taskTemp = $task->toArray();
 
         if (empty($taskTemp['users'])) {
-            $status = false;
+            $status = 'open';
         } else if ($taskTemp['users'][0]['pivot']['done'] === 0) {
-            $status = false;
+            $status = 'open';
         }
 
         $task->setAttribute('status', $status);

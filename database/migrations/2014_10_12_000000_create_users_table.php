@@ -23,9 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('invite_email');
             $table->enum('type', UserTypes::toArray())->default(UserTypes::STUDENT);
             $table->string('calender_token');
-//            $table->string('email')->unique();
-//            $table->string('password');
-//            $table->rememberToken();
+            $table->string('picture')->nullable();
             $table->timestamps();
         });
     }

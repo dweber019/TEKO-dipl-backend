@@ -2102,6 +2102,14 @@
           "$ref": "#/definitions/UserPut"
         },
         {
+          "type": "object",
+          "properties": {
+            "calenderToken": {
+              "type": "string"
+            }
+          }
+        },
+        {
           "$ref": "#/definitions/Timestamps"
         }
       ]
@@ -2134,10 +2142,10 @@
         {
           "type": "object",
           "required": [
-            "invite_email"
+            "inviteEmail"
           ],
           "properties": {
-            "invite_email": {
+            "inviteEmail": {
               "type": "string"
             }
           }
@@ -2190,6 +2198,22 @@
           }
         },
         {
+          "type": "object",
+          "properties": {
+            "sender": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "receiver": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        {
           "$ref": "#/definitions/Timestamps"
         }
       ]
@@ -2197,15 +2221,15 @@
     "ChatPut": {
       "type": "object",
       "required": [
-        "sender_id",
-        "receiver_id",
+        "senderId",
+        "receiverId",
         "message"
       ],
       "properties": {
-        "sender_id": {
+        "senderId": {
           "type": "integer"
         },
-        "receiver_id": {
+        "receiverId": {
           "type": "integer"
         },
         "message": {
@@ -2227,7 +2251,8 @@
           "type": "object",
           "properties": {
             "status": {
-              "type": "boolean"
+              "type": "string",
+              "enum": ["done", "notask", "open"]
             }
           }
         },
@@ -2377,7 +2402,8 @@
               "type": "integer"
             },
             "status": {
-              "type": "boolean"
+              "type": "string",
+              "enum": ["done", "notask", "open"]
             }
           }
         },
@@ -2496,7 +2522,8 @@
               "type": "integer"
             },
             "status": {
-              "type": "boolean"
+              "type": "string",
+              "enum": ["done", "notask", "open"]
             }
           }
         },
