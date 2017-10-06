@@ -180,7 +180,7 @@ class UserController extends Controller
     {
         $this->authorize('self', $user);
 
-        return GradeResource::collection($user->grades()->get());
+        return GradeResource::collection($user->grades()->with('teacher')->get());
     }
 
     /**

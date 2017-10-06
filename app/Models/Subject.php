@@ -24,6 +24,14 @@ class Subject extends Model
     }
 
     /**
+     * The teacher that belong to the subject.
+     */
+    public function teacher()
+    {
+        return $this->belongsTo('App\Models\User', 'teacher_id');
+    }
+
+    /**
      * The users that belong to the subject.
      */
     public function users()

@@ -2328,8 +2328,8 @@
             "archived": {
               "type": "boolean"
             },
-            "teacherId": {
-              "type": "integer"
+            "teacher": {
+              "$ref": "#/definitions/User"
             },
             "grade": {
               "type": "number",
