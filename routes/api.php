@@ -23,8 +23,12 @@ Route::middleware(['auth:api'])->prefix('users')->group(function () {
 
     Route::get('{user}/subjects', 'UserController@subjectsIndex');
 
+    Route::get('me/notifications', 'UserController@notificationsMeIndex');
+    Route::post('me/notifications/{notification}/read', 'UserController@notificationsMeRead');
     Route::get('{user}/notifications', 'UserController@notificationsIndex');
+    Route::post('{user}/notifications/{notification}/read', 'UserController@notificationsRead');
 
+    Route::get('me/grades', 'UserController@gradesMeIndex');
     Route::get('{user}/grades', 'UserController@gradesIndex');
 
     Route::get('{user}/chats', 'UserController@chatsIndex');

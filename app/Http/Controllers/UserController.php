@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\UserTypes;
 use App\Models\Chat;
+use App\Models\Notification;
 use App\Models\User;
 use App\Repository\NotificationRepository;
 use App\Repository\StatusRepository;
@@ -170,6 +171,30 @@ class UserController extends Controller
 
         return NotificationResource::collection($user->notifications()->get());
     }
+    public function notificationsMeIndex()
+    {
+        return $this->notificationsIndex(Auth::user());
+    }
+
+    /**
+     * Mark the notifications of the specified resource as read.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Notification  $notification
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function notificationsRead(User $user, Notification $notification)
+    {
+        $this->authorize('self', $user);
+
+        $user->notifications()->updateExistingPivot($notification->id, [ 'read' => true ]);
+
+        return response('', Response::HTTP_OK);
+    }
+    public function notificationsMeRead(Notification $notification)
+    {
+        return $this->notificationsRead(Auth::user(), $notification);
+    }
 
     /**
      * Display the grades of the specified resource.
@@ -182,6 +207,10 @@ class UserController extends Controller
         $this->authorize('self', $user);
 
         return GradeResource::collection($user->grades()->with('teacher')->get());
+    }
+    public function gradesMeIndex()
+    {
+        return $this->gradesIndex(Auth::user());
     }
 
     /**
@@ -278,7 +307,8 @@ class UserController extends Controller
     }
 
     /**
-     * @param Chat $chat
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $user2
      * @return \Illuminate\Contracts\Routing\ResponseFactory|Response
      */
     public function chatsRead(User $user, User $user2)

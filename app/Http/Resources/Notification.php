@@ -17,7 +17,7 @@ class Notification extends Resource
         return [
           'id' => $this->id,
           'message' => $this->message,
-          'ref_id' => $this->ref_id,
+          'refId' => $this->ref_id,
           'ref' => $this->ref,
           'read' => $this->whenPivotLoaded('notification_user', function () {
               return !!$this->pivot->read;
