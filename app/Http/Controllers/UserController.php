@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\UserTypes;
 use App\Models\Chat;
 use App\Models\User;
+use App\Repository\NotificationRepository;
 use App\Repository\StatusRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -150,7 +151,7 @@ class UserController extends Controller
 
         $subjects = $user->subjects()->with([ 'lessons.tasks.users' => function ($query) use ($user) {
             $query->where('user_id', '=', $user->id);
-        } ])->get();
+        }, 'teacher' ])->get();
 
         $subjectWithStatus = StatusRepository::getStatusOfSubjects($subjects);
 
@@ -245,6 +246,8 @@ class UserController extends Controller
         $attributes['sender_id'] = $user->id;
 
         $chat = tap(new Chat($attributes))->save();
+
+        NotificationRepository::chatAdded($user, $attributes['receiver_id']);
 
         return new ChatResource($chat);
     }

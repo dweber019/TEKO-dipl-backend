@@ -6,6 +6,7 @@ use App\Helpers\LessonTypes;
 use App\Models\Lesson;
 use App\Models\Subject;
 use App\Models\User;
+use App\Repository\NotificationRepository;
 use App\Repository\StatusRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +30,7 @@ class SubjectController extends Controller
         $currentUser = $request->user();
 
         if ($currentUser->isNotStudent()) {
-            return SubjectResource::collection(Subject::all());
+            return SubjectResource::collection(Subject::with('teacher')->all());
         }
 
         return redirect('api/users/' . $currentUser->id . '/subjects');
@@ -169,6 +170,8 @@ class SubjectController extends Controller
 
         $lesson = tap(new Lesson($attributes))->save();
 
+        NotificationRepository::lessonAdded($lesson);
+
         return redirect('api/lessons/' . $lesson->id);
     }
 
@@ -208,6 +211,9 @@ class SubjectController extends Controller
         ]);
 
         $subject->userGrades()->attach($user->id, $attributes);
+
+        NotificationRepository::gradeAdded($subject, $user);
+
         return response('', Response::HTTP_CREATED);
     }
 
@@ -223,6 +229,9 @@ class SubjectController extends Controller
         $this->authorize('isTeacher', $subject);
 
         $subject->userGrades()->detach($user->id);
+
+        NotificationRepository::gradeRemoved($subject, $user);
+
         return response('', Response::HTTP_NO_CONTENT);
     }
 
@@ -252,6 +261,9 @@ class SubjectController extends Controller
         $this->authorize('isTeacher', $subject);
 
         $subject->users()->attach($user->id);
+
+        NotificationRepository::userAddedToSubject($subject, $user);
+
         return response('', Response::HTTP_CREATED);
     }
 
@@ -267,6 +279,9 @@ class SubjectController extends Controller
         $this->authorize('isTeacher', $subject);
 
         $subject->users()->detach($user->id);
+
+        NotificationRepository::userRemovedToSubject($subject, $user);
+
         return response('', Response::HTTP_NO_CONTENT);
     }
 }

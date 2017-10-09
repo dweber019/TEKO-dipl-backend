@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Note;
 use App\Models\Task;
 use App\Models\TaskItem;
+use App\Repository\NotificationRepository;
 use App\Repository\StatusRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -134,6 +135,14 @@ class TaskController extends Controller
 
         $currentUser = Auth::user();
         $note = $task->notes()->where('user_id', $currentUser->id)->first();
+
+        if ($note === null) {
+            $note = new Note([ 'note' => '', 'user_id' => $currentUser->id ]);
+            $task->notes()->save($note);
+        }
+
+        $note = $task->notes()->where('user_id', $currentUser->id)->first();
+
         return new NoteResource($note);
     }
 
@@ -159,8 +168,10 @@ class TaskController extends Controller
             $note = new Note($attributes);
             $task->notes()->save($note);
         } else {
-            $note = tap($note->fill($attributes))->update();
+            $note->fill($attributes)->update();
         }
+
+        $note = $task->notes()->where('user_id', $currentUser->id)->first();
 
         return new NoteResource($note);
     }
@@ -175,7 +186,7 @@ class TaskController extends Controller
     {
         $this->authorize('view', $task);
 
-        return CommentResource::collection($task->comments()->get());
+        return CommentResource::collection($task->comments()->with('user')->get());
     }
 
     /**
@@ -197,6 +208,8 @@ class TaskController extends Controller
 
         $comment = new Comment($attributes);
         $task->comments()->save($comment);
+
+        NotificationRepository::taskCommentAdded($task, $request->user());
 
         return new CommentResource($comment);
     }

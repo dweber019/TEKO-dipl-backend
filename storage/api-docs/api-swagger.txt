@@ -2257,6 +2257,14 @@
           }
         },
         {
+          "type": "object",
+          "properties": {
+            "teacher": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        {
           "$ref": "#/definitions/Timestamps"
         }
       ]

@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Lesson;
 use App\Models\Note;
 use App\Models\Task;
+use App\Repository\NotificationRepository;
 use App\Repository\StatusRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -67,6 +68,13 @@ class LessonController extends Controller
           'canceled' => 'required|boolean',
         ]);
 
+        if ($lesson->canceled === false && $attributes['canceled'] === true) {
+            NotificationRepository::lessonCanceled($lesson);
+        }
+        if ($lesson->canceled === true && $attributes['canceled'] === false) {
+            NotificationRepository::lessonUncanceled($lesson);
+        }
+
         $lesson = tap($lesson->fill($attributes))->save();
 
         return redirect('api/lessons/' . $lesson->id);
@@ -81,6 +89,8 @@ class LessonController extends Controller
     public function destroy(Lesson $lesson)
     {
         $this->authorize('isTeacher', $lesson);
+
+        NotificationRepository::lessonRemoved($lesson);
 
         $lesson->delete();
         return response('', Response::HTTP_NO_CONTENT);
@@ -148,6 +158,14 @@ class LessonController extends Controller
 
         $currentUser = $request->user();
         $note = $lesson->notes()->where('user_id', $currentUser->id)->first();
+
+        if ($note === null) {
+            $note = new Note([ 'note' => '', 'user_id' => $currentUser->id ]);
+            $lesson->notes()->save($note);
+        }
+
+        $note = $lesson->notes()->where('user_id', $currentUser->id)->first();
+
         return new NoteResource($note);
     }
 
@@ -170,11 +188,14 @@ class LessonController extends Controller
         $note = $lesson->notes()->where('user_id', $currentUser->id)->first();
 
         if ($note === null) {
-            $note = tap(new Note($attributes))->save();
+            $attributes['user_id'] = $request->user()->id;
+            $note = new Note($attributes);
             $lesson->notes()->save($note);
         } else {
-            $note = tap($note->fill($attributes))->update();
+            $note->fill($attributes)->update();
         }
+
+        $note = $lesson->notes()->where('user_id', $currentUser->id)->first();
 
         return new NoteResource($note);
     }
@@ -189,7 +210,7 @@ class LessonController extends Controller
     {
         $this->authorize('view', $lesson);
 
-        return CommentResource::collection($lesson->comments()->get());
+        return CommentResource::collection($lesson->comments()->with('user')->get());
     }
 
     /**
@@ -211,6 +232,8 @@ class LessonController extends Controller
 
         $comment = new Comment($attributes);
         $lesson->comments()->save($comment);
+
+        NotificationRepository::lessonCommentAdded($lesson, $request->user());
 
         return new CommentResource($comment);
     }

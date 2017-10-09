@@ -16,11 +16,14 @@ class GradeUser extends Resource
     {
         return [
           'id' => $this->id,
-          'firstname' => $this->fistname,
+          'firstname' => $this->firstname,
           'lastname' => $this->lastname,
           'type' => $this->type,
           'grade' => $this->whenPivotLoaded('grades', function () {
               return $this->pivot->grade;
+          }),
+          'gradeDate' => $this->whenPivotLoaded('grades', function () {
+              return is_null($this->pivot->created_at) ? null : $this->pivot->created_at->toDateTimeString();
           }),
           'createdAt' => is_null($this->created_at) ? null : $this->created_at->toDateTimeString(),
           'updatedAt' => is_null($this->updated_at) ? null : $this->updated_at->toDateTimeString(),
