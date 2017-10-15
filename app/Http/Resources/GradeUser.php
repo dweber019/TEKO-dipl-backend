@@ -19,6 +19,10 @@ class GradeUser extends Resource
           'firstname' => $this->firstname,
           'lastname' => $this->lastname,
           'type' => $this->type,
+          'picture' => $this->picture,
+          'gradeId' => $this->whenPivotLoaded('grades', function () {
+              return $this->pivot->id;
+          }),
           'grade' => $this->whenPivotLoaded('grades', function () {
               return $this->pivot->grade;
           }),

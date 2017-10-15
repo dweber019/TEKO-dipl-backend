@@ -19,6 +19,7 @@ class Grade extends Resource
           'name' => $this->name,
           'archived' => !!$this->archived,
           'teacher' => $this->teacher,
+          'teacherId' => $this->teacher_id,
           'grade' => $this->whenPivotLoaded('grades', function () {
               return $this->pivot->grade;
           }),

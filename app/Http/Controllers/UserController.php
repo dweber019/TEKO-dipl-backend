@@ -148,7 +148,15 @@ class UserController extends Controller
      */
     public function subjectsIndex(User $user)
     {
+        $currentUser = Auth::user();
+
         $this->authorize('self', $user);
+
+        if ($currentUser->isTeacher()) {
+            $subjects = $user->subjectsAsTeacher()->with('teacher')->get();
+
+            return SubjectResource::collection($subjects);
+        }
 
         $subjects = $user->subjects()->with([ 'lessons.tasks.users' => function ($query) use ($user) {
             $query->where('user_id', '=', $user->id);

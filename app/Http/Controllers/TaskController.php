@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Note;
 use App\Models\Task;
 use App\Models\TaskItem;
+use App\Policies\TaskPolicy;
 use App\Repository\NotificationRepository;
 use App\Repository\StatusRepository;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ use App\Http\Resources\Task as TaskResource;
 use App\Http\Resources\Note as NoteResource;
 use App\Http\Resources\Comment as CommentResource;
 use App\Http\Resources\TaskItem as TaskItemResource;
+use App\Http\Resources\TaskItemWithResult as TaskItemWithResultResource;
 
 class TaskController extends Controller
 {
@@ -64,7 +66,7 @@ class TaskController extends Controller
 
         $task = tap($task->fill($attributes))->save();
 
-        return redirect('api/tasks/' . $task->id);
+        return $this->show($task);
     }
 
     /**
@@ -91,7 +93,18 @@ class TaskController extends Controller
     {
         $this->authorize('view', $task);
 
-        return TaskItemResource::collection($task->taskItems()->get());
+        $currentUser = Auth::user();
+
+        if (TaskPolicy::isUserTeacher($currentUser, $task) || $currentUser->isAdmin()) {
+            $taskItems = $task->taskItems()->with('users')->get();
+        } else {
+            $taskItems = $task->taskItems()->with(['users' => function ($query) use ($currentUser) {
+                $query->where('user_id', '=', $currentUser->id);
+            }])->get();
+        }
+
+
+        return TaskItemWithResultResource::collection($taskItems);
     }
 
     /**

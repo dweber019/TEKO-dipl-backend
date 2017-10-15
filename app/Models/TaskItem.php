@@ -12,7 +12,7 @@ class TaskItem extends Model
      * @var array
      */
     protected $fillable = [
-      'title', 'description', 'question_type', 'question', 'order',
+      'title', 'description', 'question_type', 'question', 'order', 'task_id',
     ];
 
     /**

@@ -70,6 +70,14 @@ class User extends Authenticatable
     }
 
     /**
+     * The subjects that belong to the user as teacher.
+     */
+    public function subjectsAsTeacher()
+    {
+        return $this->hasMany('App\Models\Subject', 'teacher_id');
+    }
+
+    /**
      * The tasks that belong to the user.
      */
     public function tasks()

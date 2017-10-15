@@ -100,8 +100,8 @@ Route::resource('lessons', 'LessonController', ['except' => [
  * Tasks related routes
  */
 Route::middleware(['auth:api'])->prefix('tasks')->group(function () {
-    Route::get('{task}/taskitems', 'TaskController@taskItemsIndex');
-    Route::post('{task}/taskitems', 'TaskController@taskItemsStore');
+    Route::get('{task}/taskItems', 'TaskController@taskItemsIndex');
+    Route::post('{task}/taskItems', 'TaskController@taskItemsStore');
 
     Route::get('{task}/note', 'TaskController@noteIndex');
     Route::put('{task}/note', 'TaskController@noteUpdate');
@@ -118,11 +118,12 @@ Route::resource('tasks', 'TaskController', ['except' => [
 /*
  * Task Items related routes
  */
-Route::middleware(['auth:api'])->prefix('taskitems')->group(function () {
-    Route::get('{taskItem}/work', 'TaskItemController@workIndex');
+Route::middleware(['auth:api'])->prefix('taskItems')->group(function () {
+    Route::get('{taskItem}/file', 'TaskItemController@workGetFile');
+    Route::post('{taskItem}/file', 'TaskItemController@workFile');
     Route::put('{taskItem}/work', 'TaskItemController@workUpdate');
 });
-Route::resource('taskitems', 'TaskItemController', ['except' => [
+Route::resource('taskItems', 'TaskItemController', ['except' => [
   'create', 'edit', 'store', 'index', 'show'
 ]])->middleware('auth:api');
 

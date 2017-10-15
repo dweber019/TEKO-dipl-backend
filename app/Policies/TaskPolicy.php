@@ -72,6 +72,11 @@ class TaskPolicy
     }
 
     public function isStudent(User $user, Task $task) {
+        return TaskPolicy::isUserTeacher($user, $task);
+    }
+
+    public static function isUserTeacher(User $user, Task $task)
+    {
         return !!DB::table('tasks')
           ->join('lessons', 'lessons.id', '=', 'tasks.lesson_id')
           ->join('subjects', 'subjects.id', '=', 'lessons.subject_id')

@@ -107,7 +107,7 @@ class GroupController extends Controller
     {
         $this->authorize('addUser', $group);
 
-        $group->users()->attach($user);
+        $group->users()->syncWithoutDetaching([$user->id]);
         return response('', Response::HTTP_CREATED);
     }
 

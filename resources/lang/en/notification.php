@@ -13,15 +13,15 @@ return [
     |
     */
 
-    'subject-added' => 'You have been added to a new subject: ',
-    'subject-removed' => 'You have been removed from a subejct: ',
-    'lesson-added' => 'There has been a lesson added to ',
-    'lesson-removed' => 'There has been a lesson removed from ',
-    'lesson-canceled' => 'A lesson has been canceled in ',
-    'lesson-uncanceled' => 'A lesson has been uncanceled in ',
-    'chat' => 'You have new activities in the chat from ',
-    'grade-added' => 'You have a new grade in ',
-    'grade-removed' => 'A grade has been removed from ',
-    'lesson-comment' => 'There is a new comment in a lesson from ',
-    'task-comment' => 'There is a new comment in a task from ',
+    'subject-added' => 'Du wurdest zu einem neuen Fach hinzugefügt: ',
+    'subject-removed' => 'Du wurdest von einem Fach entfernt: ',
+    'lesson-added' => 'Es wurde einen neue Lektion hinzugefügt zu ',
+    'lesson-removed' => 'Es wurde eine Lektion entfernt von ',
+    'lesson-canceled' => 'Eine Lektion wurde abgesagt in ',
+    'lesson-uncanceled' => 'Eine Lektion wurde wieder aktiviert in ',
+    'chat' => 'Du hast neue Chat Aktivitäten von ',
+    'grade-added' => 'Du hast eine neue Note in ',
+    'grade-removed' => 'Ente Note wurde entfernt von ',
+    'lesson-comment' => 'Ein neuer Kommentar in einer Lektion wurde hinzugefügt von ',
+    'task-comment' => 'Ein neuer Kommentar in einer Aufgabe wurde hinzugefügt von ',
 ];

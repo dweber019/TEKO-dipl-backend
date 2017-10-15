@@ -10,6 +10,7 @@ use App\Repository\NotificationRepository;
 use App\Repository\StatusRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\Subject as SubjectResource;
@@ -29,8 +30,8 @@ class SubjectController extends Controller
     {
         $currentUser = $request->user();
 
-        if ($currentUser->isNotStudent()) {
-            return SubjectResource::collection(Subject::with('teacher')->all());
+        if ($currentUser->isAdmin()) {
+            return SubjectResource::collection(Subject::with('teacher')->get());
         }
 
         return redirect('api/users/' . $currentUser->id . '/subjects');
@@ -54,7 +55,7 @@ class SubjectController extends Controller
 
         $subject = tap(new Subject($attributes))->save();
 
-        return redirect('api/subjects/' . $subject->id);
+        return $this->show($subject);
     }
 
     /**
@@ -101,7 +102,7 @@ class SubjectController extends Controller
 
         $subject = tap($subject->fill($attributes))->save();
 
-        return redirect('api/subjects/' . $subject->id);
+        return $this->show($subject);
     }
 
     /**
@@ -136,7 +137,7 @@ class SubjectController extends Controller
 
         $lessons = $subject->lessons()->with([ 'tasks.users' => function ($query) use ($currentUser) {
             $query->where('user_id', '=', $currentUser->id);
-        } ])->get();
+        } ])->orderBy('start_date')->get();
 
         $lessonsWithStatus = StatusRepository::getStatusOfLessons($lessons);
 
@@ -221,14 +222,20 @@ class SubjectController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Subject  $subject
-     * @param  \App\Models\User  $user
+     * @param  Integer  $gradeId
      * @return \Illuminate\Http\Response
      */
-    public function gradesDestroy(Subject $subject, User $user)
+    public function gradesDestroy(Subject $subject, $gradeId)
     {
         $this->authorize('isTeacher', $subject);
 
-        $subject->userGrades()->detach($user->id);
+        $user = $subject->userGrades()->wherePivot('id', '=', $gradeId)->first();
+
+        DB::table('grades')
+          ->where([
+            ['id', '=', $gradeId],
+          ])
+          ->delete();
 
         NotificationRepository::gradeRemoved($subject, $user);
 
@@ -260,7 +267,7 @@ class SubjectController extends Controller
     {
         $this->authorize('isTeacher', $subject);
 
-        $subject->users()->attach($user->id);
+        $subject->users()->syncWithoutDetaching([$user->id]);
 
         NotificationRepository::userAddedToSubject($subject, $user);
 

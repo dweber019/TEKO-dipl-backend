@@ -77,7 +77,7 @@ class LessonController extends Controller
 
         $lesson = tap($lesson->fill($attributes))->save();
 
-        return redirect('api/lessons/' . $lesson->id);
+        return $this->show($lesson);
     }
 
     /**

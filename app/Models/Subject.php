@@ -46,7 +46,7 @@ class Subject extends Model
     public function userGrades()
     {
         return $this->belongsToMany('App\Models\User', 'grades')
-          ->withPivot(['grade'])
+          ->withPivot(['id', 'grade'])
           ->withTimestamps();
     }
 }

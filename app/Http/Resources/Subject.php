@@ -20,6 +20,7 @@ class Subject extends Resource
           'name' => $this->name,
           'archived' => !!$this->archived,
           'teacher' => $this->teacher ? new UserResource($this->teacher) : null,
+          'teacherId' => $this->teacher_id,
           'status' => $this->status,
           'createdAt' => is_null($this->created_at) ? null : $this->created_at->toDateTimeString(),
           'updatedAt' => is_null($this->updated_at) ? null : $this->updated_at->toDateTimeString(),
