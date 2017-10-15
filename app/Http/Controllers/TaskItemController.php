@@ -10,6 +10,7 @@ use Auth0\Login\facade\Auth0;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,11 +71,20 @@ class TaskItemController extends Controller
     {
         $currentUser = Auth::user();
 
+        // Validate request
         $this->authorize('view', $taskItem);
 
         if ($taskItem->question_type !== \App\Helpers\QuestionTypes::FILE) {
             return response('', Response::HTTP_BAD_REQUEST);
         }
+        $request->validate([
+          'file' => [
+            'required',
+            'file',
+            'size:100000',
+            'mimes:jpeg,bmp,png,pdf,doc,docx,ppt,pptx,txt,md'
+          ],
+        ]);
 
         $file = $request->file('file');
         $filename = explode('.', $file->getClientOriginalName());

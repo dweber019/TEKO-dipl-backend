@@ -20,16 +20,18 @@ class TaskItemWithResult extends Resource
         $users = [];
         foreach ($this->whenLoaded('users') as $user) {
             $result = $user->pivot->result;
+            $url = null;
 
             if ($this->question_type === \App\Helpers\QuestionTypes::FILE) {
-                $result = $baseUrl = url(
+                $url = $baseUrl = url(
                     '/'
                   ) . '/api/taskItems/' . $this->id . '/file?api_token=' . substr($request->headers->get('authorization'), 7);
             }
 
             array_push($users, [
               'user' => new User($user),
-              'result' => $result
+              'result' => $result,
+              'fileUrl' => $url
             ]);
         }
 
