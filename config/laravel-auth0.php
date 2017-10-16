@@ -4,7 +4,7 @@ $cfEnv = getenv('VCAP_SERVICES');
 if ($cfEnv !== false) {
     try {
         $vcapServices = json_decode(getenv('VCAP_SERVICES'));
-        $userProvided = head($vcapServices->{'user-provided'});
+        $userProvided = $vcapServices->{'user-provided'};
 
         $userProvidedConnection = null;
 
@@ -19,11 +19,11 @@ if ($cfEnv !== false) {
             throw new Exception('No Service found for dipl-auth0');
         }
 
-        $_ENV['AUTH0_CLIENT_ID'] = $userProvidedConnection->{'AUTH0_CLIENT_ID'};
-        $_ENV['AUTH0_CLIENT_SECRET'] = $userProvidedConnection->{'AUTH0_CLIENT_SECRET'};
-        $_ENV['AUTH0_DOMAIN'] = $userProvidedConnection->{'AUTH0_DOMAIN'};
-        $_ENV['AUTH0_AUDIENCE'] = $userProvidedConnection->{'AUTH0_AUDIENCE'};
-        $_ENV['AUTH0_CALLBACK_URL'] = $userProvidedConnection->{'AUTH0_CALLBACK_URL'};
+        $_ENV['AUTH0_CLIENT_ID'] = $userProvidedConnection->credentials->{'AUTH0_CLIENT_ID'};
+        $_ENV['AUTH0_CLIENT_SECRET'] = $userProvidedConnection->credentials->{'AUTH0_CLIENT_SECRET'};
+        $_ENV['AUTH0_DOMAIN'] = $userProvidedConnection->credentials->{'AUTH0_DOMAIN'};
+        $_ENV['AUTH0_AUDIENCE'] = $userProvidedConnection->credentials->{'AUTH0_AUDIENCE'};
+        $_ENV['AUTH0_CALLBACK_URL'] = $userProvidedConnection->credentials->{'AUTH0_CALLBACK_URL'};
     }
     catch (Exception $e) {
         dd($e->getMessage());

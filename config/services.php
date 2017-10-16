@@ -4,7 +4,7 @@ $cfEnv = getenv('VCAP_SERVICES');
 if ($cfEnv !== false) {
     try {
         $vcapServices = json_decode(getenv('VCAP_SERVICES'));
-        $userProvided = head($vcapServices->{'user-provided'});
+        $userProvided = $vcapServices->{'user-provided'};
 
         $userProvidedConnection = null;
 
@@ -19,8 +19,8 @@ if ($cfEnv !== false) {
             throw new Exception('No Service found for dipl-mailgun');
         }
 
-        $_ENV['MAILGUN_DOMAIN'] = $userProvidedConnection->{'MAILGUN_DOMAIN'};
-        $_ENV['MAILGUN_SECRET'] = $userProvidedConnection->{'MAILGUN_SECRET'};
+        $_ENV['MAILGUN_DOMAIN'] = $userProvidedConnection->credentials->{'MAILGUN_DOMAIN'};
+        $_ENV['MAILGUN_SECRET'] = $userProvidedConnection->credentials->{'MAILGUN_SECRET'};
     }
     catch (Exception $e) {
         dd($e->getMessage());
