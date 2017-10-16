@@ -1,5 +1,35 @@
 <?php
 
+$cfEnv = getenv('VCAP_SERVICES');
+if ($cfEnv !== false) {
+    try {
+        $vcapServices = json_decode(getenv('VCAP_SERVICES'));
+        $userProvided = head($vcapServices->{'user-provided'});
+
+        $userProvidedConnection = null;
+
+        foreach ($userProvided as $item) {
+            if ($item->name === 'dipl-auth0') {
+                $userProvidedConnection = $item;
+                break;
+            }
+        }
+
+        if ($userProvidedConnection === null) {
+            throw new Exception('No Service found for dipl-auth0');
+        }
+
+        $_ENV['AUTH0_CLIENT_ID'] = $userProvidedConnection->{'AUTH0_CLIENT_ID'};
+        $_ENV['AUTH0_CLIENT_SECRET'] = $userProvidedConnection->{'AUTH0_CLIENT_SECRET'};
+        $_ENV['AUTH0_DOMAIN'] = $userProvidedConnection->{'AUTH0_DOMAIN'};
+        $_ENV['AUTH0_AUDIENCE'] = $userProvidedConnection->{'AUTH0_AUDIENCE'};
+        $_ENV['AUTH0_CALLBACK_URL'] = $userProvidedConnection->{'AUTH0_CALLBACK_URL'};
+    }
+    catch (Exception $e) {
+        dd($e->getMessage());
+    }
+}
+
 return array(
 
     /*
@@ -10,7 +40,7 @@ return array(
     |
     */
 
-    'domain'        => getenv('AUTH0_DOMAIN'),
+    'domain'        => $_ENV['AUTH0_DOMAIN'] ?? getenv('AUTH0_DOMAIN'),
     /*
     |--------------------------------------------------------------------------
     |   Your APP id
@@ -19,7 +49,7 @@ return array(
     |
     */
 
-    'client_id'     => getenv('AUTH0_CLIENT_ID'),
+    'client_id'     => $_ENV['AUTH0_CLIENT_ID'] ?? getenv('AUTH0_CLIENT_ID'),
 
     /*
     |--------------------------------------------------------------------------
@@ -28,7 +58,7 @@ return array(
     |   As set in the auth0 administration page
     |
     */
-    'client_secret' => getenv('AUTH0_CLIENT_SECRET'),
+    'client_secret' => $_ENV['AUTH0_CLIENT_SECRET'] ?? getenv('AUTH0_CLIENT_SECRET'),
 
    /*
     |--------------------------------------------------------------------------
@@ -39,7 +69,7 @@ return array(
     |
     */
 
-    'redirect_uri'  => getenv('AUTH0_CALLBACK_URL'),
+    'redirect_uri'  => $_ENV['AUTH0_CALLBACK_URL'] ?? getenv('AUTH0_CALLBACK_URL'),
 
     /*
     |--------------------------------------------------------------------------
@@ -62,7 +92,7 @@ return array(
     |   This is used to verify the decoded tokens when using RS256
     |
     */
-    'authorized_issuers'  => [ 'https://'.getenv('AUTH0_DOMAIN').'/' ],
+    'authorized_issuers'  => [ 'https://' . ($_ENV['AUTH0_DOMAIN'] ?? getenv('AUTH0_DOMAIN')) . '/' ],
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +100,7 @@ return array(
     |--------------------------------------------------------------------------
     |
     */
-    'api_identifier'  => getenv('AUTH0_AUDIENCE'),
+    'api_identifier'  => $_ENV['AUTH0_AUDIENCE'] ?? getenv('AUTH0_AUDIENCE'),
 
     /*
     |--------------------------------------------------------------------------

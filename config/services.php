@@ -1,5 +1,32 @@
 <?php
 
+$cfEnv = getenv('VCAP_SERVICES');
+if ($cfEnv !== false) {
+    try {
+        $vcapServices = json_decode(getenv('VCAP_SERVICES'));
+        $userProvided = head($vcapServices->{'user-provided'});
+
+        $userProvidedConnection = null;
+
+        foreach ($userProvided as $item) {
+            if ($item->name === 'dipl-mailgun') {
+                $userProvidedConnection = $item;
+                break;
+            }
+        }
+
+        if ($userProvidedConnection === null) {
+            throw new Exception('No Service found for dipl-mailgun');
+        }
+
+        $_ENV['MAILGUN_DOMAIN'] = $userProvidedConnection->{'MAILGUN_DOMAIN'};
+        $_ENV['MAILGUN_SECRET'] = $userProvidedConnection->{'MAILGUN_SECRET'};
+    }
+    catch (Exception $e) {
+        dd($e->getMessage());
+    }
+}
+
 return [
 
     /*
@@ -15,8 +42,8 @@ return [
     */
 
     'mailgun' => [
-        'domain' => env('MAILGUN_DOMAIN'),
-        'secret' => env('MAILGUN_SECRET'),
+        'domain' => $_ENV['MAILGUN_DOMAIN'] ?? env('MAILGUN_DOMAIN'),
+        'secret' => $_ENV['MAILGUN_SECRET'] ?? env('MAILGUN_SECRET'),
     ],
 
     'ses' => [

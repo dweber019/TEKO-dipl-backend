@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\UserTypes;
+use App\Mail\UserInvitation;
+use App\Main;
 use App\Models\Chat;
 use App\Models\Notification;
 use App\Models\User;
@@ -11,6 +13,7 @@ use App\Repository\StatusRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
@@ -55,6 +58,9 @@ class UserController extends Controller
         ]);
 
         $user = tap(new User($attributes))->save();
+
+        $invitation = new \App\Helpers\UserInvitation($user->firstname, $user->lastname);
+        Mail::to($user->invite_email)->send(new UserInvitation($invitation));
 
         return new UserResource($user);
     }
