@@ -82,7 +82,7 @@ class TaskItemController extends Controller
             'required',
             'file',
             'size:100000',
-            'mimes:jpeg,bmp,png,pdf,doc,docx,ppt,pptx,txt,md'
+            'mimes:jpeg,jpg,bmp,png,pdf,doc,docx,ppt,pptx,txt,md'
           ],
         ]);
 
