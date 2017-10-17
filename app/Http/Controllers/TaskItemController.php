@@ -81,7 +81,6 @@ class TaskItemController extends Controller
           'file' => [
             'required',
             'file',
-            'size:100000',
             'mimes:jpeg,jpg,bmp,png,pdf,doc,docx,ppt,pptx,txt,md'
           ],
         ]);
