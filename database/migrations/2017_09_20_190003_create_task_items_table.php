@@ -19,7 +19,7 @@ class CreateTaskItemsTable extends Migration
             $table->text('description')->nullable();
             $table->enum('question_type', \App\Helpers\QuestionTypes::toArray());
             $table->text('question')->nullable();
-            $table->integer('order');
+            $table->integer('order')->default(1);
 
             $table->unsignedInteger('task_id');
             $table->foreign('task_id')->references('id')
