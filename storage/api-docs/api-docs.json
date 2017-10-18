@@ -59,8 +59,7 @@
       "flow": "implicit",
       "scopes": {
         "openid": "Standard Scope",
-        "profile": "Get the users profile",
-        "email": "Get the users email"
+        "profile": "Get the users profile"
       }
     }
   },
@@ -228,6 +227,25 @@
         }
       }
     },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "Benutzer"
+        ],
+        "summary": "Mein Benutzer",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
     "/users/{id}/groups": {
       "get": {
         "tags": [
@@ -364,6 +382,37 @@
         }
       }
     },
+    "/users/{id}/chats/{id2}/read": {
+      "post": {
+        "tags": [
+          "Benutzer",
+          "Chat"
+        ],
+        "summary": "Chat als gelesen markieren",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "$ref": "#/parameters/ID2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
     "/users/{id}/subjects": {
       "get": {
         "tags": [
@@ -432,6 +481,94 @@
         }
       }
     },
+    "/users/me/notifications": {
+      "get": {
+        "tags": [
+          "Benutzer",
+          "Notification"
+        ],
+        "summary": "Alle Notifications eines Benutzers",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Notification"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/{id}/notifications/{id2}/read": {
+      "get": {
+        "tags": [
+          "Benutzer",
+          "Notification"
+        ],
+        "summary": "Markiere Notifikation als gelesen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "$ref": "#/parameters/ID2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/me/notifications/{id2}/read": {
+      "get": {
+        "tags": [
+          "Benutzer",
+          "Notification"
+        ],
+        "summary": "Markiere Notifikation als gelesen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
     "/users/{id}/grades": {
       "get": {
         "tags": [
@@ -444,6 +581,35 @@
             "$ref": "#/parameters/ID"
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GradeUser"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/me/grades": {
+      "get": {
+        "tags": [
+          "Benutzer",
+          "Noten"
+        ],
+        "summary": "Alle Noten eines Benutzers",
         "responses": {
           "200": {
             "description": "Erfolgreich",
@@ -1788,7 +1954,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/TaskItem"
+                "$ref": "#/definitions/TaskItemBig"
               }
             }
           },
@@ -1976,38 +2142,6 @@
       }
     },
     "/taskitems/{id}/work": {
-      "get": {
-        "tags": [
-          "Aufgaben",
-          "Aufgaben Element"
-        ],
-        "summary": "Alle Aufgaben Elemente für eine Aufgabe",
-        "parameters": [
-          {
-            "$ref": "#/parameters/ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Erfolgreich",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/TaskItemWork"
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/responses/ServerError"
-          }
-        }
-      },
       "put": {
         "tags": [
           "Aufgaben",
@@ -2034,6 +2168,76 @@
             "schema": {
               "$ref": "#/definitions/TaskItemWork"
             }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/taskitems/{id}/file": {
+      "get": {
+        "tags": [
+          "Aufgaben",
+          "Aufgaben Element"
+        ],
+        "summary": "Datei einer Teilaufgabe laden",
+        "produces": [
+          "image/png",
+          "application/pdf"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Aufgaben",
+          "Aufgaben Element"
+        ],
+        "summary": "Datei einer Teilaufgabe hinzufügen",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "formData",
+            "name": "file",
+            "required": true,
+            "type": "file",
+            "description": "Die Datei"
+          }
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
           },
           "401": {
             "$ref": "#/responses/Unauthorized"
@@ -2083,6 +2287,9 @@
           "type": "object",
           "properties": {
             "calenderToken": {
+              "type": "string"
+            },
+            "picture": {
               "type": "string"
             }
           }
@@ -2196,8 +2403,8 @@
     "ChatPut": {
       "type": "object",
       "required": [
-        "sender_id",
-        "receiver_id",
+        "senderId",
+        "receiverId",
         "message"
       ],
       "properties": {
@@ -2226,7 +2433,11 @@
           "properties": {
             "status": {
               "type": "string",
-              "enum": ["done", "notask", "open"]
+              "enum": [
+                "done",
+                "notask",
+                "open"
+              ]
             }
           }
         },
@@ -2309,9 +2520,16 @@
             "teacher": {
               "$ref": "#/definitions/User"
             },
+            "teacherId": {
+              "type": "integer"
+            },
             "grade": {
               "type": "number",
               "format": "double"
+            },
+            "gradeDate": {
+              "type": "string",
+              "format": "date-time"
             }
           }
         },
@@ -2335,9 +2553,19 @@
             "lastname": {
               "type": "string"
             },
+            "picture": {
+              "type": "string"
+            },
+            "gardeId": {
+              "type": "integer"
+            },
             "grade": {
               "type": "number",
               "format": "double"
+            },
+            "gradeDate": {
+              "type": "string",
+              "format": "date-time"
             }
           }
         },
@@ -2379,7 +2607,11 @@
             },
             "status": {
               "type": "string",
-              "enum": ["done", "notask", "open"]
+              "enum": [
+                "done",
+                "notask",
+                "open"
+              ]
             }
           }
         },
@@ -2496,7 +2728,11 @@
             },
             "status": {
               "type": "string",
-              "enum": ["done", "notask", "open"]
+              "enum": [
+                "done",
+                "notask",
+                "open"
+              ]
             }
           }
         },
@@ -2576,6 +2812,45 @@
           "type": "integer"
         }
       }
+    },
+    "TaskItemBig": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "$ref": "#/definitions/TaskItemPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "taskId": {
+              "type": "integer"
+            },
+            "users": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "$ref": "#/definitions/User"
+                  },
+                  "result": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
     },
     "TaskItemWork": {
       "type": "object",
