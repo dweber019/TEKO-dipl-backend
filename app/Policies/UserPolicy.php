@@ -72,6 +72,13 @@ class UserPolicy
         }
     }
 
+    /**
+     * Is the requested user the requester
+     *
+     * @param User $user
+     * @param User $userModel
+     * @return bool
+     */
     public function self(User $user, User $userModel) {
         if ($user->id === $userModel->id) {
             return true;

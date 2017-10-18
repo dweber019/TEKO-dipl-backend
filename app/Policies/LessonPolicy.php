@@ -60,10 +60,24 @@ class LessonPolicy
         return SubjectPolicy::isTeacherOfSubject($user, $lesson->subject()->first());
     }
 
+    /**
+     * Is the user the teacher of subject
+     *
+     * @param User $user
+     * @param Lesson $lesson
+     * @return bool
+     */
     public function isTeacher(User $user, Lesson $lesson) {
         return SubjectPolicy::isTeacherOfSubject($user, $lesson->subject()->first());
     }
 
+    /**
+     * Is the user a student of the subject
+     *
+     * @param User $user
+     * @param Lesson $lesson
+     * @return bool
+     */
     public function isStudent(User $user, Lesson $lesson) {
         return !!DB::table('lessons')
           ->join('subjects', 'subjects.id', '=', 'lessons.subject_id')

@@ -12,7 +12,7 @@ class SmallSchool extends Seeder
     public function run()
     {
         /**
-         * Create Some Users
+         * Create some users
          */
         $admin = tap(new App\Models\User(
             [
@@ -37,7 +37,7 @@ class SmallSchool extends Seeder
         $teacher->save();
 
         /**
-         * Create some Groups
+         * Create some notifications
          */
         $notificationsNotRead = factory(App\Models\Notification::class, 5)->create();
         $notificationsRead = factory(App\Models\Notification::class, 5)->create();
@@ -50,7 +50,7 @@ class SmallSchool extends Seeder
         }
 
         /**
-         * Create some Groups
+         * Create some groups
          */
         $group1A = factory(App\Models\Group::class)->create([ 'name' => '1A' ]);
         $group1B = factory(App\Models\Group::class)->create([ 'name' => '1B' ]);
@@ -64,7 +64,7 @@ class SmallSchool extends Seeder
         $group1C->users()->sync($studentsPaged[2]);
 
         /**
-         * Create some Chats
+         * Create some chats
          */
         factory(App\Models\Chat::class)->create([ 'sender_id' => $admin->id, 'receiver_id' => $students[0]->id ]);
         factory(App\Models\Chat::class)->create([ 'sender_id' => $students[0]->id, 'receiver_id' => $admin->id ]);
@@ -95,9 +95,7 @@ class SmallSchool extends Seeder
         $subjectEnglish->userGrades()->attach($studentsPaged[0][1], ['grade' => 3]);
 
         /**
-         * Create some lessons for
-         *
-         * Only users from
+         * Create some lessons
          */
         $lessonsEnglish = [];
         array_push($lessonsEnglish, factory(App\Models\Lesson::class)->create([ 'start_date' => \Carbon\Carbon::now(), 'end_date' => \Carbon\Carbon::now()->addHour(), 'subject_id' => $subjectEnglish->id ]));
@@ -120,7 +118,7 @@ class SmallSchool extends Seeder
         array_push($lessonsIt, factory(App\Models\Lesson::class)->create([ 'start_date' => \Carbon\Carbon::now()->addWeeks(2)->addHour(), 'end_date' => \Carbon\Carbon::now()->addWeeks(2)->addHours(2), 'subject_id' => $subjectIt->id ]));
 
         /**
-         * Create some Tasks
+         * Create some tasks
          */
         $tasksTranslate = [];
         $tasksVerbs = [];
@@ -138,7 +136,7 @@ class SmallSchool extends Seeder
         }
 
         /**
-         * Create some Task Items
+         * Create some task items
          */
         $taskItems = [];
         foreach ($tasksTranslate as &$task) {

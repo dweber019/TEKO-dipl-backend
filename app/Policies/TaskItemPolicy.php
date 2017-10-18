@@ -60,6 +60,13 @@ class TaskItemPolicy
         return $this->isTeacher($user, $taskItem);
     }
 
+    /**
+     * Is the user the teacher of the related subject
+     *
+     * @param User $user
+     * @param TaskItem $taskItem
+     * @return bool
+     */
     public function isTeacher(User $user, TaskItem $taskItem) {
         return $user->isTeacher() && !!DB::table('task_items')
             ->join('tasks', 'tasks.id', '=', 'task_items.task_id')
@@ -72,6 +79,13 @@ class TaskItemPolicy
             ->count();
     }
 
+    /**
+     * Is the user a student of the related subject
+     *
+     * @param User $user
+     * @param TaskItem $taskItem
+     * @return bool
+     */
     public function isStudent(User $user, TaskItem $taskItem) {
         return !!DB::table('task_items')
           ->join('tasks', 'tasks.id', '=', 'task_items.task_id')

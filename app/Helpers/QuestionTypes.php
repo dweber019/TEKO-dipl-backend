@@ -1,14 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: tzhweda9
- * Date: 26.09.17
- * Time: 11:39
- */
 
 namespace App\Helpers;
 
 
+/**
+ * Helper class for task item question types for type safety
+ *
+ * Class QuestionTypes
+ * @package App\Helpers
+ */
 class QuestionTypes
 {
 

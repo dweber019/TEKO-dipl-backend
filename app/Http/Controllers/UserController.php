@@ -321,6 +321,8 @@ class UserController extends Controller
     }
 
     /**
+     * Mark all chats as read
+     *
      * @param  \App\Models\User  $user
      * @param  \App\Models\User  $user2
      * @return \Illuminate\Contracts\Routing\ResponseFactory|Response

@@ -15,7 +15,12 @@ use Illuminate\Auth\AuthenticationException;
 
 class AuthUserRepository implements Auth0UserRepository
 {
-    /* This class is used on api authN to fetch the user based on the jwt.*/
+    /**
+     * Decode jwt
+     *
+     * @param \Auth0\Login\Contract\stdClass $jwt
+     * @return mixed
+     */
     public function getUserByDecodedJWT($jwt) {
         /*
          * The `sub` claim in the token represents the subject of the token
@@ -26,10 +31,23 @@ class AuthUserRepository implements Auth0UserRepository
         return $this->upsertUser($jwt);
     }
 
+    /**
+     * Get the user profile info
+     *
+     * @param array $userInfo
+     * @return mixed
+     */
     public function getUserByUserInfo($userInfo) {
         return $this->upsertUser($userInfo['profile']);
     }
 
+    /**
+     * Handle the user setup and retrival
+     *
+     * @param $profile
+     * @return mixed
+     * @throws AuthenticationException
+     */
     protected function upsertUser($profile) {
 
         $user = User::where("auth0_id", $profile->user_id)->first();
@@ -66,6 +84,12 @@ class AuthUserRepository implements Auth0UserRepository
         return $user;
     }
 
+    /**
+     * Get the user by identifier
+     *
+     * @param \Auth0\Login\Contract\the $identifier
+     * @return mixed|null
+     */
     public function getUserByIdentifier($identifier) {
         //Get the user info of the user logged in (probably in session)
         $user = \App::make('auth0')->getUser();

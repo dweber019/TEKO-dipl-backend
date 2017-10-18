@@ -64,6 +64,8 @@ class GroupPolicy
     }
 
     /**
+     * Check allowed add user
+     *
      * @param User $user
      * @param Group $group
      * @return bool
@@ -76,6 +78,8 @@ class GroupPolicy
     }
 
     /**
+     * Check allowed remove user
+     *
      * @param User $user
      * @param Group $group
      * @return bool

@@ -9,6 +9,12 @@ use App\Models\Task;
 class StatusRepository
 {
 
+    /**
+     * Calculate status for subjects
+     *
+     * @param Mixed $subjects
+     * @return static
+     */
     public static function getStatusOfSubjects($subjects)
     {
         $subjectWithStatus = collect($subjects)->map(function($subject) {
@@ -18,6 +24,12 @@ class StatusRepository
         return $subjectWithStatus;
     }
 
+    /**
+     * Calculate status of subject
+     *
+     * @param Subject $subject
+     * @return Subject
+     */
     public static function getStatusOfSubject(Subject $subject)
     {
         $status = 'done';
@@ -49,6 +61,12 @@ class StatusRepository
         return $subject;
     }
 
+    /**
+     * Calculate status of lessons
+     *
+     * @param $lessons
+     * @return static
+     */
     public static function getStatusOfLessons($lessons)
     {
         $lessonsWithStatus = collect($lessons)->map(function($lesson) {
@@ -58,6 +76,12 @@ class StatusRepository
         return $lessonsWithStatus;
     }
 
+    /**
+     * Calculate status of lesson
+     *
+     * @param Lesson $lesson
+     * @return Lesson
+     */
     public static function getStatusOfLesson(Lesson $lesson)
     {
         $status = 'done';
@@ -85,6 +109,12 @@ class StatusRepository
         return $lesson;
     }
 
+    /**
+     * Calculate status of tasks
+     *
+     * @param $tasks
+     * @return static
+     */
     public static function getStatusOfTasks($tasks)
     {
         $tasksWithStatus = collect($tasks)->map(function($task) {
@@ -94,6 +124,12 @@ class StatusRepository
         return $tasksWithStatus;
     }
 
+    /**
+     * Calculate status of task
+     *
+     * @param Task $task
+     * @return Task
+     */
     public static function getStatusOfTask(Task $task)
     {
         $status = 'done';

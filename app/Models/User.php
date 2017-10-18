@@ -39,14 +39,29 @@ class User extends Authenticatable
     }
 
 
+    /**
+     * Is user a student
+     *
+     * @return bool
+     */
     public function isNotStudent() {
         return $this->type !== UserTypes::STUDENT;
     }
 
+    /**
+     * Is user a teacher
+     *
+     * @return bool
+     */
     public function isAdmin() {
         return $this->type === UserTypes::ADMIN;
     }
 
+    /**
+     * Is user an admin
+     *
+     * @return bool
+     */
     public function isTeacher() {
         return $this->type === UserTypes::TEACHER;
     }

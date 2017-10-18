@@ -37,7 +37,9 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
 
-        // Disable any web related requests
+        /**
+         * Disable any web related requests
+         */
         // $this->mapWebRoutes();
 
         //

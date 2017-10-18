@@ -20,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        /**
+         * This is used to not wrap response data in the data attribute
+         */
         Resource::withoutWrapping();
     }
 
@@ -30,11 +33,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        /**
+         * Bind the our custom User Repository to Auth0
+         */
         $this->app->bind(
           Auth0UserRepositoryContract::class,
           AuthUserRepository::class);
 
-        // This is used for RS256 tokens to avoid fetching the JWKs on each request
+        /**
+         * This is used for RS256 tokens to avoid fetching the JWKs on each request
+         */
         $this->app->bind(
           CacheHandler::class,
           function () {

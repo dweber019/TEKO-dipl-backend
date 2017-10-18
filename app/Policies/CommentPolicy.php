@@ -46,6 +46,13 @@ class CommentPolicy
         return $this->commentOwnedByUser($user, $comment);
     }
 
+    /**
+     * Check if comment owned by user
+     *
+     * @param User $user
+     * @param Comment $comment
+     * @return bool
+     */
     private function commentOwnedByUser(User $user, Comment $comment) {
         if ($comment->user_id === $user->id) {
             return true;

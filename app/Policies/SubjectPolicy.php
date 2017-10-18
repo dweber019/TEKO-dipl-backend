@@ -72,11 +72,25 @@ class SubjectPolicy
         return $this->isTeacher($user, $subject);
     }
 
+    /**
+     * Is user the teacher of the subject
+     *
+     * @param User $user
+     * @param Subject $subject
+     * @return bool
+     */
     public function isTeacher(User $user, Subject $subject)
     {
         return SubjectPolicy::isTeacherOfSubject($user, $subject);
     }
 
+    /**
+     * Is user the teacher of the subject
+     *
+     * @param User $user
+     * @param Subject $subject
+     * @return bool
+     */
     public static function isTeacherOfSubject(User $user, Subject $subject) {
         if ($user->isTeacher() && $subject->teacher_id === $user->id) {
             return true;
@@ -84,6 +98,13 @@ class SubjectPolicy
         return false;
     }
 
+    /**
+     * Is user a student of the subject
+     *
+     * @param User $user
+     * @param Subject $subject
+     * @return bool
+     */
     public function isStudent(User $user, Subject $subject) {
         return !!$user->subjects()->where('subject_id', $subject->id)->count();
     }

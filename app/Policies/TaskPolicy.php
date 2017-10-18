@@ -60,6 +60,13 @@ class TaskPolicy
         return $this->isTeacher($user, $task);
     }
 
+    /**
+     * Is the user the teacher of the task
+     *
+     * @param User $user
+     * @param Task $task
+     * @return bool
+     */
     public function isTeacher(User $user, Task $task) {
         return $user->isTeacher() && !!DB::table('tasks')
           ->join('lessons', 'lessons.id', '=', 'tasks.lesson_id')
@@ -71,10 +78,24 @@ class TaskPolicy
           ->count();
     }
 
+    /**
+     * Is the user a student of the task
+     *
+     * @param User $user
+     * @param Task $task
+     * @return bool
+     */
     public function isStudent(User $user, Task $task) {
         return TaskPolicy::isUserTeacher($user, $task);
     }
 
+    /**
+     * Is the user the teacher of the related subject
+     *
+     * @param User $user
+     * @param Task $task
+     * @return bool
+     */
     public static function isUserTeacher(User $user, Task $task)
     {
         return !!DB::table('tasks')

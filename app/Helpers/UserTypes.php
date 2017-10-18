@@ -2,6 +2,12 @@
 
 namespace App\Helpers;
 
+/**
+ * Helper class for user types for type safety
+ *
+ * Class UserTypes
+ * @package App\Helpers
+ */
 class UserTypes
 {
 
