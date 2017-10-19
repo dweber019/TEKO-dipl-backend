@@ -70,6 +70,8 @@ class TaskItemTest extends TestCase
     {
         $actingUser = User::find(2);
 
+        Storage::fake('s3');
+
         $response = $this->actingAs($actingUser)->post('/api/taskItems/4/file', [
           'file' => UploadedFile::fake()->image('avatar.jpg')
         ]);
@@ -78,12 +80,14 @@ class TaskItemTest extends TestCase
 
         $filePath = 'taskitems/' . $this->getTaskItemFileName(4, 2);
 
-        $this->assertTrue(Storage::cloud()->exists($filePath));
+        Storage::disk('s3')->assertExists($filePath);
     }
 
     public function test_read_file_of_task_item()
     {
         $actingUser = User::find(2);
+
+        Storage::fake('s3');
 
         $response = $this->actingAs($actingUser)->post('/api/taskItems/4/file', [
           'file' => UploadedFile::fake()->image('avatar.jpg')

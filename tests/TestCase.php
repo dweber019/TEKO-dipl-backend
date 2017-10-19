@@ -22,11 +22,4 @@ abstract class TestCase extends BaseTestCase
           \Illuminate\Auth\Middleware\Authenticate::class,
         ]);
     }
-
-    protected  function tearDown()
-    {
-        Storage::deleteDirectory('taskitems');
-
-        parent::tearDown();
-    }
 }
