@@ -16,6 +16,15 @@ class Notification extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+      'ref_id' => 'integer',
+    ];
+
+    /**
      * The users that belong to the notification.
      */
     public function users()

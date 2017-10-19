@@ -16,6 +16,15 @@ class TaskItem extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+      'task_id' => 'integer',
+    ];
+
+    /**
      * Get the task that owns the task item.
      */
     public function task()

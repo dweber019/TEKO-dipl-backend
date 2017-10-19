@@ -149,6 +149,9 @@ class SmallSchool extends Seeder
             $taskItemRun = factory(App\Models\TaskItem::class)->create(
               [ 'title' => 'run', 'description' => null, 'question_type' => 'input', 'question' => null, 'order' => 1, 'task_id' => $task->id ]
             );
+            $taskItemRun = factory(App\Models\TaskItem::class)->create(
+              [ 'title' => 'File', 'description' => null, 'question_type' => 'file', 'question' => null, 'order' => 1, 'task_id' => $task->id ]
+            );
 
             if ($task->id === $tasksTranslate[0]->id) {
                 array_push($taskItems, $taskItemDo);

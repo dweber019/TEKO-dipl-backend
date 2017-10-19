@@ -12,7 +12,7 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "host": "127.0.0.1:8000",
+  "host": "dipl-backend.scapp.io",
   "basePath": "/api",
   "tags": [
     {
@@ -60,6 +60,7 @@
       "flow": "implicit",
       "scopes": {
         "openid": "Standard Scope",
+        "email": "Get the users email",
         "profile": "Get the users profile"
       }
     }
@@ -509,7 +510,7 @@
       }
     },
     "/users/{id}/notifications/{id2}/read": {
-      "get": {
+      "post": {
         "tags": [
           "Benutzer",
           "Notification"
@@ -540,7 +541,7 @@
       }
     },
     "/users/me/notifications/{id2}/read": {
-      "get": {
+      "post": {
         "tags": [
           "Benutzer",
           "Notification"

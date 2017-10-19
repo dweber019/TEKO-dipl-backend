@@ -16,6 +16,17 @@ class Chat extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+      'sender_id' => 'integer',
+      'receiver_id' => 'integer',
+      'read' => 'boolean',
+    ];
+
+    /**
      * Get the user (sender) that owns the chat.
      */
     public function sender()

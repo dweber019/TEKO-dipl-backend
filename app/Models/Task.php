@@ -25,6 +25,15 @@ class Task extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+      'lesson_id' => 'integer',
+    ];
+
+    /**
      * Get the lesson that owns the Task.
      */
     public function lesson()

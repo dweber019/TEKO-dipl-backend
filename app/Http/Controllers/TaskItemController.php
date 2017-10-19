@@ -92,7 +92,7 @@ class TaskItemController extends Controller
 
         $newFile = $filename . '-' . Carbon::now()->timestamp . '.' . $file->getClientOriginalExtension();
 
-        $request->file('file')->storeAs('taskitems', $newFile, 's3');
+        Storage::cloud()->putFileAs('taskitems', $request->file('file'), $newFile);
 
         $taskItem->users()->syncWithoutDetaching([ $currentUser->id => [ 'result' => $newFile . ';' . $file->getMimeType() ] ]);
 
@@ -119,7 +119,7 @@ class TaskItemController extends Controller
 
         $exploseFile = explode(';', $resultString);
 
-        $file = Storage::disk('s3')->read('taskitems/' . $exploseFile[0]);
+        $file = Storage::cloud()->read('taskitems/' . $exploseFile[0]);
 
         return response($file, 200, [
           'Content-Type' => $exploseFile[1],

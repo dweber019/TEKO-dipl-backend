@@ -16,6 +16,16 @@ class Subject extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+      'teacher_id' => 'integer',
+      'archived' => 'boolean',
+    ];
+
+    /**
      * Get the lessons for the subject.
      */
     public function lessons()

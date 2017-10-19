@@ -3,26 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    use RefreshDatabase;
-
-    /**
-     * Call this template method before each test method is run.
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->artisan('db:seed', [ '--class' => 'SmallSchool' ]);
-
-        $this->withoutMiddleware([
-          \Illuminate\Auth\Middleware\Authenticate::class,
-        ]);
-    }
-
     /**
      * A basic test example.
      *

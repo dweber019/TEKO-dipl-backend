@@ -17,6 +17,15 @@ class Note extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+      'user_id' => 'integer',
+    ];
+
+    /**
      * Get all of the owning noteable models.
      */
     public function noteable()
