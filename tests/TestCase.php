@@ -4,6 +4,7 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -20,5 +21,12 @@ abstract class TestCase extends BaseTestCase
         $this->withoutMiddleware([
           \Illuminate\Auth\Middleware\Authenticate::class,
         ]);
+    }
+
+    protected  function tearDown()
+    {
+        Storage::deleteDirectory('taskitems');
+
+        parent::tearDown();
     }
 }

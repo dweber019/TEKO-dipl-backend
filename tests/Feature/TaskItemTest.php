@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -75,14 +76,9 @@ class TaskItemTest extends TestCase
 
         $response->assertSuccessful();
 
-        $filePath = 'taskitems/avatar-' . Carbon::now()->timestamp . '.jpg';
+        $filePath = 'taskitems/' . $this->getTaskItemFileName(4, 2);
 
         $this->assertTrue(Storage::cloud()->exists($filePath));
-
-        /**
-         * Clean Up
-         */
-        Storage::deleteDirectory('taskitems');
     }
 
     public function test_read_file_of_task_item()
@@ -95,16 +91,25 @@ class TaskItemTest extends TestCase
 
         $response->assertSuccessful();
 
-        $fileName = 'avatar-' . Carbon::now()->timestamp . '.jpg';
+        $fileName = $this->getTaskItemFileName(4, 2);
 
         $response = $this->actingAs($actingUser)->get('/api/taskItems/4/file');
 
         $response->assertHeader('Content-Type', 'image/jpeg');
         $response->assertHeader('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+    }
 
-        /**
-         * Clean Up
-         */
-        Storage::deleteDirectory('taskitems');
+    private function getTaskItemFileName($taskItemId, $userId)
+    {
+        $result = DB::table('task_item_user')
+          ->where([
+            ['user_id', '=', $userId],
+            ['task_item_id', '=', $taskItemId],
+          ])
+          ->value('result');
+
+        $exploseResult = explode(';', $result);
+
+        return $exploseResult[0];
     }
 }
