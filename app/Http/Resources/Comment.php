@@ -17,7 +17,7 @@ class Comment extends Resource
         return [
           'id' => $this->id,
           'message' => $this->message,
-          'user' => $this->user ? $this->user->firstname . ' ' . $this->user->lastname : null,
+          'user' => $this->user ? $this->user : null,
           'createdAt' => is_null($this->created_at) ? null : $this->created_at->toDateTimeString(),
           'updatedAt' => is_null($this->updated_at) ? null : $this->updated_at->toDateTimeString(),
         ];

@@ -130,6 +130,6 @@ Route::resource('taskItems', 'TaskItemController', ['except' => [
 /*
  * Comments related routes
  */
-Route::resource('comments', 'CommentsController', ['except' => [
+Route::resource('comments', 'CommentController', ['except' => [
   'create', 'edit', 'store', 'index', 'show'
 ]])->middleware('auth:api');

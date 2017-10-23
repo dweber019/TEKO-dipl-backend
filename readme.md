@@ -16,6 +16,38 @@ There are a few thing to install before you can use this project.
 3. Go to your project root and run "composer install"
 4. Install MySQL ([Tutorial Brew](https://gist.github.com/nrollr/3f57fc15ded7dddddcc4e82fe137b58e))
 
+### Setup CF services
+
+MariaDB:
+1. Login to [Developer Portal](https://console.developer.swisscom.com)
+2. Create or navigate to a Org / Space
+3. Create a MariaDB Service
+4. Bind the service to this app
+
+S3:
+1. Do step 1 and 2 from MariaDB
+2. Create a S3 Service
+3. Bind the service to this app
+4. Update your `.env` with the new service settings or use a other disk as cloud
+
+ELK:
+1. Do step 1 and 2 from MariaDB
+2. Create a ELK Service
+3. Bind the service to this app
+
+### Setup Mailgun
+Go to [Mailgun](https://www.mailgun.com/) and add a new domain like [this](https://help.mailgun.com/hc/en-us/articles/203637190-How-do-I-add-a-domain-).
+Fill in the domain and the domain key in `.env` and create a custom service in CF with name `dipl-mailgun`
+and two credential keys `MAILGUN_DOMAIN` and `MAILGUN_SECRET`.
+
+### Setup Auth0
+Go to [Auth0](https://auth0.com/) and create a new tenant.
+1. Create a Resource Server like described [here](https://auth0.com/docs/quickstart/backend/laravel#create-a-resource-server-api-).
+2. Create a client like in section "Get Your Application Keys" in [here](https://auth0.com/docs/quickstart/spa/angular2#get-your-application-keys).
+
+Now fill in the settings in `.env` and create a custom service in CF with name `dipl-auth0` and add the following
+credentials to it: `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`, `AUTH0_DOMAIN`, `AUTH0_AUDIENCE`, `AUTH0_CALLBACK_URL`
+
 ## Run
 
 First you need to copy and rename the .env.example to .env and fill in the your configurations.
