@@ -1,6 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
+use \App\Helpers\UserTypes;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,13 +14,24 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\User::class, function (Faker $faker) {
-    static $password;
-
+$factory->define(App\Models\User::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'password' => $password ?: $password = bcrypt('secret'),
-        'remember_token' => str_random(10),
+        'firstname' => $faker->firstName,
+        'lastname' => $faker->lastName,
+        'invite_token' => 'ABC',
+        'invite_email' => $faker->unique()->safeEmail,
+        'type' => UserTypes::STUDENT
     ];
+});
+
+$factory->defineAs(App\Models\User::class, UserTypes::TEACHER, function (Faker $faker) use ($factory) {
+    $user = $factory->raw('App\Models\User');
+
+    return array_merge($user, ['type' => UserTypes::TEACHER]);
+});
+
+$factory->defineAs(App\Models\User::class, UserTypes::ADMIN, function (Faker $faker) use ($factory) {
+    $user = $factory->raw('App\Models\User');
+
+    return array_merge($user, ['type' => UserTypes::ADMIN]);
 });

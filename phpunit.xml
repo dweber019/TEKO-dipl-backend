@@ -27,5 +27,12 @@
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="MAIL_DRIVER" value="array"/>
+        <env name="DB_CONNECTION" value="sqlite_testing"/>
+        <env name="DB_DEFAULT" value="sqlite_testing"/>
+        <env name="AUTH0_CLIENT_ID" value="test"/>
+        <env name="AUTH0_CLIENT_SECRET" value="test"/>
+        <env name="AUTH0_DOMAIN" value="test"/>
+        <env name="AUTH0_CALLBACK_URL" value="test"/>
     </php>
 </phpunit>

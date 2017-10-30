@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use \App\Helpers\UserTypes;
 
 class CreateUsersTable extends Migration
 {
@@ -15,10 +16,14 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('firstname')->nullable();
+            $table->string('lastname')->nullable();
+            $table->string('auth0_id')->nullable();
+            $table->string('invite_token');
+            $table->string('invite_email');
+            $table->enum('type', UserTypes::toArray())->default(UserTypes::STUDENT);
+            $table->string('calender_token');
+            $table->string('picture')->nullable();
             $table->timestamps();
         });
     }

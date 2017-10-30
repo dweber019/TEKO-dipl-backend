@@ -1,0 +1,2928 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the API for the EasyLearn app. It's a projekt done for TEKO Olten.\n\nChange the host to to 127.0.0.1:8000 to target the local development environment and dipl-backend.scapp.io to target the production system.\n\nClient ID: ZZv4TZ1aXXZaJ4B1g5rhy6EhiCDNTDrC",
+    "version": "1.0.0",
+    "title": "EasyLearn API",
+    "contact": {
+      "email": "david.weber@edu.teko.ch"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "dipl-backend.scapp.io",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "Benutzer"
+    },
+    {
+      "name": "Feed"
+    },
+    {
+      "name": "Gruppen"
+    },
+    {
+      "name": "Fächer"
+    },
+    {
+      "name": "Noten"
+    },
+    {
+      "name": "Unterricht"
+    },
+    {
+      "name": "Aufgaben"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    },
+    "oauth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://dipl.eu.auth0.com/authorize?audience=http://127.0.0.1:8000",
+      "flow": "implicit",
+      "scopes": {
+        "openid": "Standard Scope",
+        "email": "Get the users email",
+        "profile": "Get the users profile"
+      }
+    }
+  },
+  "security": [
+    {
+      "api_key": []
+    },
+    {
+      "oauth": [
+        "openid",
+        "profile"
+      ]
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Benutzer"
+        ],
+        "summary": "Alle Benutzer",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Benutzer"
+        ],
+        "summary": "Neuen Benutzer hinzufügen",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserInvite"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Benutzer"
+        ],
+        "summary": "Finde einen Benutzer",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Benutzer"
+        ],
+        "summary": "Aktuallisiere einen Benutzer",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Benutzer"
+        ],
+        "summary": "Lösche einen Benutzer",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "Benutzer"
+        ],
+        "summary": "Mein Benutzer",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/{id}/groups": {
+      "get": {
+        "tags": [
+          "Benutzer",
+          "Gruppen"
+        ],
+        "summary": "Alle Gruppen eines Benutzers",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Group"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/{id}/chats": {
+      "get": {
+        "tags": [
+          "Benutzer",
+          "Chat"
+        ],
+        "summary": "Alle Chats eines Benutzers",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Chat"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Benutzer",
+          "Chat"
+        ],
+        "summary": "Neue Chat für den Benutzer erstellen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChatPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Chat"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/{id}/chats/{id2}": {
+      "delete": {
+        "tags": [
+          "Benutzer",
+          "Chat"
+        ],
+        "summary": "Alle Chats zwischen Benutzer eins (id) und Benutzer zwei (id2) löschen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "$ref": "#/parameters/ID2"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/{id}/chats/{id2}/read": {
+      "post": {
+        "tags": [
+          "Benutzer",
+          "Chat"
+        ],
+        "summary": "Chat als gelesen markieren",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "$ref": "#/parameters/ID2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/{id}/subjects": {
+      "get": {
+        "tags": [
+          "Benutzer",
+          "Fächer"
+        ],
+        "summary": "Alle Fächer eines Benutzers",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Subject"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/{id}/notifications": {
+      "get": {
+        "tags": [
+          "Benutzer",
+          "Notification"
+        ],
+        "summary": "Alle Notifications eines Benutzers",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Notification"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/me/notifications": {
+      "get": {
+        "tags": [
+          "Benutzer",
+          "Notification"
+        ],
+        "summary": "Alle Notifications eines Benutzers",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Notification"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/{id}/notifications/{id2}/read": {
+      "post": {
+        "tags": [
+          "Benutzer",
+          "Notification"
+        ],
+        "summary": "Markiere Notifikation als gelesen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "$ref": "#/parameters/ID2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/me/notifications/{id2}/read": {
+      "post": {
+        "tags": [
+          "Benutzer",
+          "Notification"
+        ],
+        "summary": "Markiere Notifikation als gelesen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/{id}/grades": {
+      "get": {
+        "tags": [
+          "Benutzer",
+          "Noten"
+        ],
+        "summary": "Alle Noten eines Benutzers",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GradeUser"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/users/me/grades": {
+      "get": {
+        "tags": [
+          "Benutzer",
+          "Noten"
+        ],
+        "summary": "Alle Noten eines Benutzers",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GradeUser"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/agenda": {
+      "get": {
+        "tags": [
+          "Benutzer",
+          "Agenda"
+        ],
+        "summary": "Die Agenda eines Benutzers",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Agenda"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/groups": {
+      "get": {
+        "tags": [
+          "Gruppen"
+        ],
+        "summary": "Alle Gruppen",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Group"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Gruppen"
+        ],
+        "summary": "Neue Gruppe hinzufügen",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GroupPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Group"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/groups/{id}": {
+      "get": {
+        "tags": [
+          "Gruppen"
+        ],
+        "summary": "Finde eine Gruppe",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Group"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Gruppen"
+        ],
+        "summary": "Aktuallisiere eine Gruppe",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GroupPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Group"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Gruppen"
+        ],
+        "summary": "Lösche eine Gruppe",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/groups/{id}/users": {
+      "get": {
+        "tags": [
+          "Gruppen",
+          "Benutzer"
+        ],
+        "summary": "Die Benutzer einer Gruppe",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/groups/{id}/users/{id2}": {
+      "post": {
+        "tags": [
+          "Gruppen",
+          "Benutzer"
+        ],
+        "summary": "Die Benutzer einer Gruppe",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "$ref": "#/parameters/ID2"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Gruppen",
+          "Benutzer"
+        ],
+        "summary": "Die Benutzer einer Gruppe",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "$ref": "#/parameters/ID2"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/feed/{token}": {
+      "get": {
+        "tags": [
+          "Feed",
+          "Benutzer"
+        ],
+        "security": [],
+        "summary": "Feed eines Benutzers an hand des Tokens",
+        "produces": [
+          "text/calendar"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "Feed Token des Benutzers",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Download iCal Datei",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/subjects": {
+      "get": {
+        "tags": [
+          "Fächer"
+        ],
+        "summary": "Alle Fächer",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Subject"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fächer"
+        ],
+        "summary": "Neues Fach hinzufügen",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubjectPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Subject"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/subjects/{id}": {
+      "get": {
+        "tags": [
+          "Fächer"
+        ],
+        "summary": "Finde ein Fach",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Subject"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Fächer"
+        ],
+        "summary": "Aktuallisiere ein Fach",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubjectPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Subject"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Fächer"
+        ],
+        "summary": "Lösche ein Fach",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/subjects/{id}/lessons": {
+      "get": {
+        "tags": [
+          "Fächer",
+          "Unterricht"
+        ],
+        "summary": "Der Unterricht eines Fachs",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Lesson"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Fächer",
+          "Unterricht"
+        ],
+        "summary": "Neuer Unterricht für ein Fach hinzufügen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LessonPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/subjects/{id}/grades": {
+      "get": {
+        "tags": [
+          "Fächer",
+          "Noten"
+        ],
+        "summary": "Die Noten eines Fachs",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GradeSubject"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/subjects/{id}/grades/{id2}": {
+      "post": {
+        "tags": [
+          "Fächer",
+          "Noten"
+        ],
+        "summary": "Neue Note für ein Fach (id) für Benutzer (id2) hinzufügen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "$ref": "#/parameters/ID2"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "grade"
+              ],
+              "properties": {
+                "grade": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Fächer",
+          "Noten"
+        ],
+        "summary": "Die Note eines Benutzers (id2) löschen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "$ref": "#/parameters/ID2"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/subjects/{id}/users": {
+      "get": {
+        "tags": [
+          "Fächer",
+          "Benutzer"
+        ],
+        "summary": "Die Benutzer eines Fachs",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/subjects/{id}/users/{id2}": {
+      "post": {
+        "tags": [
+          "Fächer",
+          "Benutzer"
+        ],
+        "summary": "Neuen Benutzer (id2) einem Fach hinzufügen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "$ref": "#/parameters/ID2"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Fächer",
+          "Benutzer"
+        ],
+        "summary": "Ein Benutzer (id2) von einem Fach löschen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "$ref": "#/parameters/ID2"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/lessons/{id}": {
+      "get": {
+        "tags": [
+          "Unterricht"
+        ],
+        "summary": "Finde ein Unterricht",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Unterricht"
+        ],
+        "summary": "Aktuallisiere ein Unterricht",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LessonPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Unterricht"
+        ],
+        "summary": "Lösche ein Unterricht",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/lesson/{id}/tasks": {
+      "get": {
+        "tags": [
+          "Unterricht",
+          "Aufgaben"
+        ],
+        "summary": "Alle Aufgaben für eine Unterricht",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Task"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Unterricht",
+          "Aufgaben"
+        ],
+        "summary": "Neue Aufgabe für ein Unterricht hinzufügen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TaskPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/lesson/{id}/note": {
+      "get": {
+        "tags": [
+          "Unterricht",
+          "Notiz"
+        ],
+        "summary": "Die Notize des akutellen Benutzers für den Unterricht",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Unterricht",
+          "Notiz"
+        ],
+        "summary": "Hinzufügen / bearbeiten einer Notiz des akutellen Benutzers",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NotePut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/lesson/{id}/comments": {
+      "get": {
+        "tags": [
+          "Unterricht",
+          "Kommentare"
+        ],
+        "summary": "Alle Kommentare für ein Unterricht",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Comment"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Unterricht",
+          "Kommentare"
+        ],
+        "summary": "Neuer Kommentar für ein Unterricht hinzufügen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CommentPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "tags": [
+          "Aufgaben"
+        ],
+        "summary": "Finde eine Aufgabe",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Aufgaben"
+        ],
+        "summary": "Aktuallisiere eine Aufgabe",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TaskPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Aufgaben"
+        ],
+        "summary": "Lösche eine Aufgabe",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/tasks/{id}/note": {
+      "get": {
+        "tags": [
+          "Aufgaben",
+          "Notiz"
+        ],
+        "summary": "Die Notize des akutellen Benutzers für die Aufgabe",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Aufgaben",
+          "Notiz"
+        ],
+        "summary": "Hinzufügen / bearbeiten einer Notiz des akutellen Benutzers",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NotePut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/tasks/{id}/comments": {
+      "get": {
+        "tags": [
+          "Aufgaben",
+          "Kommentare"
+        ],
+        "summary": "Alle Kommentare für eine Aufgabe",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Comment"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Aufgaben",
+          "Kommentare"
+        ],
+        "summary": "Neuer Kommentar für eine Aufgabe hinzufügen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CommentPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/tasks/{id}/done": {
+      "put": {
+        "tags": [
+          "Aufgaben"
+        ],
+        "summary": "Aufgabe status bearbeiten",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/tasks/{id}/taskitems": {
+      "get": {
+        "tags": [
+          "Aufgaben",
+          "Aufgaben Element"
+        ],
+        "summary": "Alle Aufgaben Elemente für eine Aufgabe",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TaskItemBig"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Aufgaben",
+          "Aufgaben Element"
+        ],
+        "summary": "Neuer Kommentar für eine Aufgabe hinzufügen",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TaskItemPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/TaskItem"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/comments/{id}": {
+      "put": {
+        "tags": [
+          "Kommentare"
+        ],
+        "summary": "Aktuallisiere einen Kommentar",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CommentPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Kommentare"
+        ],
+        "summary": "Lösche einen Kommentar",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/taskitems/{id}": {
+      "put": {
+        "tags": [
+          "Aufgaben",
+          "Aufgaben Element"
+        ],
+        "summary": "Aktuallisiere einen Aufgaben Element",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TaskItemPut"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/TaskItem"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Aufgaben",
+          "Aufgaben Element"
+        ],
+        "summary": "Lösche ein Aufgaben Element",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/taskitems/{id}/work": {
+      "put": {
+        "tags": [
+          "Aufgaben",
+          "Aufgaben Element"
+        ],
+        "summary": "Aufgabe Element bearbeiten mittels akutellen Benutzer",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TaskItemWorkPut"
+            }
+          }
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich",
+            "schema": {
+              "$ref": "#/definitions/TaskItemWork"
+            }
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/taskitems/{id}/file": {
+      "get": {
+        "tags": [
+          "Aufgaben",
+          "Aufgaben Element"
+        ],
+        "summary": "Datei einer Teilaufgabe laden",
+        "produces": [
+          "image/png",
+          "application/pdf"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          }
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Aufgaben",
+          "Aufgaben Element"
+        ],
+        "summary": "Datei einer Teilaufgabe hinzufügen",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/ID"
+          },
+          {
+            "in": "formData",
+            "name": "file",
+            "required": true,
+            "type": "file",
+            "description": "Die Datei"
+          }
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Erfolgreich"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/responses/ValidationError"
+          },
+          "500": {
+            "$ref": "#/responses/ServerError"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Timestamps": {
+      "type": "object",
+      "properties": {
+        "createAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "IdentifyAble": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "$ref": "#/definitions/UserPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "calenderToken": {
+              "type": "string"
+            },
+            "picture": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "UserPut": {
+      "type": "object",
+      "properties": {
+        "firstname": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "student",
+            "teacher",
+            "admin"
+          ]
+        }
+      }
+    },
+    "UserInvite": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/UserPut"
+        },
+        {
+          "type": "object",
+          "required": [
+            "inviteEmail"
+          ],
+          "properties": {
+            "inviteEmail": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "Group": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "$ref": "#/definitions/GroupPut"
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "GroupPut": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Chat": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "$ref": "#/definitions/ChatPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "read": {
+              "type": "boolean"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sender": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "receiver": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "ChatPut": {
+      "type": "object",
+      "required": [
+        "senderId",
+        "receiverId",
+        "message"
+      ],
+      "properties": {
+        "senderId": {
+          "type": "integer"
+        },
+        "receiverId": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "Subject": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "$ref": "#/definitions/SubjectPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "done",
+                "notask",
+                "open"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "teacher": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "SubjectPut": {
+      "type": "object",
+      "required": [
+        "name",
+        "archived",
+        "teacherId"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "archived": {
+          "type": "boolean",
+          "default": false
+        },
+        "teacherId": {
+          "type": "integer"
+        }
+      }
+    },
+    "Notification": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "refId": {
+              "type": "integer"
+            },
+            "ref": {
+              "type": "string"
+            },
+            "read": {
+              "type": "boolean"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "GradeUser": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "archived": {
+              "type": "boolean"
+            },
+            "teacher": {
+              "$ref": "#/definitions/User"
+            },
+            "teacherId": {
+              "type": "integer"
+            },
+            "grade": {
+              "type": "number",
+              "format": "double"
+            },
+            "gradeDate": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "GradeSubject": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "firstname": {
+              "type": "string"
+            },
+            "lastname": {
+              "type": "string"
+            },
+            "picture": {
+              "type": "string"
+            },
+            "gardeId": {
+              "type": "integer"
+            },
+            "grade": {
+              "type": "number",
+              "format": "double"
+            },
+            "gradeDate": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "Agenda": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Lesson"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "Lesson": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "$ref": "#/definitions/LessonPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "subjectId": {
+              "type": "integer"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "done",
+                "notask",
+                "open"
+              ]
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "LessonPut": {
+      "type": "object",
+      "required": [
+        "startDate",
+        "endDate",
+        "canceled"
+      ],
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "location": {
+          "type": "string"
+        },
+        "room": {
+          "type": "string"
+        },
+        "canceled": {
+          "type": "boolean",
+          "default": false
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "lesson",
+            "exam",
+            "reminder"
+          ]
+        }
+      }
+    },
+    "Note": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/NotePut"
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "NotePut": {
+      "type": "object",
+      "required": [
+        "note"
+      ],
+      "properties": {
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "Comment": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "$ref": "#/definitions/CommentPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "user": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "CommentPut": {
+      "type": "object",
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "Task": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "$ref": "#/definitions/TaskPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lessonId": {
+              "type": "integer"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "done",
+                "notask",
+                "open"
+              ]
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "TaskPut": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "TaskItem": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "$ref": "#/definitions/TaskItemPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "taskId": {
+              "type": "integer"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "TaskItemPut": {
+      "type": "object",
+      "required": [
+        "title",
+        "question_type",
+        "order"
+      ],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "question_type": {
+          "type": "string",
+          "enum": [
+            "toggle",
+            "select",
+            "file",
+            "input",
+            "text"
+          ]
+        },
+        "question": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        }
+      }
+    },
+    "TaskItemBig": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "$ref": "#/definitions/TaskItemPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "taskId": {
+              "type": "integer"
+            },
+            "users": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "$ref": "#/definitions/User"
+                  },
+                  "result": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "TaskItemWork": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/IdentifyAble"
+        },
+        {
+          "$ref": "#/definitions/TaskItemWorkPut"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "user": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/Timestamps"
+        }
+      ]
+    },
+    "TaskItemWorkPut": {
+      "type": "object",
+      "required": [
+        "result"
+      ],
+      "properties": {
+        "result": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "ID": {
+      "name": "id",
+      "in": "path",
+      "description": "ID der ersten Ressource",
+      "required": true,
+      "type": "integer",
+      "format": "int64"
+    },
+    "ID2": {
+      "name": "id2",
+      "in": "path",
+      "description": "ID der zweiten Ressource",
+      "required": true,
+      "type": "integer",
+      "format": "int64"
+    }
+  },
+  "responses": {
+    "NotFound": {
+      "description": "Die Ressource konnt nicht gefunden werden"
+    },
+    "BadRequest": {
+      "description": "Die Anfrage war falsch"
+    },
+    "ServerError": {
+      "description": "Server Fehler"
+    },
+    "ValidationError": {
+      "description": "Die Ressource ist nicht valid"
+    },
+    "Unauthorized": {
+      "description": "Sie sind nicht autorisiert (401)."
+    },
+    "Forbidden": {
+      "description": "Sie sind nicht autorisiert (403)."
+    }
+  }
+}

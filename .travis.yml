@@ -1,0 +1,27 @@
+language: php
+php:
+  - '7.1'
+notifications:
+  email: false
+
+env:
+  - DB_CONNECTION=sqlite_testing
+
+install:
+  - composer self-update
+  - composer install --no-interaction
+
+script:
+  - php artisan config:clear
+  - vendor/bin/phpunit
+
+deploy:
+  skip_cleanup: true
+  provider: cloudfoundry
+  username: $CF_USER
+  password: $CF_PASSWORD
+  api: $CF_API
+  organization: sandbox
+  space: TZHWEDA9
+  on:
+    branch: develop

@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ExampleTest extends TestCase
 {
@@ -14,8 +14,14 @@ class ExampleTest extends TestCase
      */
     public function testBasicTest()
     {
-        $response = $this->get('/');
+        $actingUser = User::find(2);
 
-        $response->assertStatus(200);
+        $response = $this->actingAs($actingUser)->deleteJson('/api/users/1');
+
+        $response->assertStatus(403);
+
+        $this->assertDatabaseHas('users', [
+          'invite_email' => 'david.weber.schenker@gmail.com'
+        ]);
     }
 }

@@ -1,5 +1,25 @@
 <?php
 
+$cfEnv = getenv('VCAP_SERVICES');
+if ($cfEnv !== false) {
+    try {
+        $vcapServices = json_decode(getenv('VCAP_SERVICES'));
+        $mariaDbConnection = head($vcapServices->mariadbent)->credentials;
+
+        $_ENV['DB_CONNECTION'] = 'mysql';
+        $_ENV['DB_HOST'] = $mariaDbConnection->host;
+        $_ENV['DB_PORT'] = $mariaDbConnection->port;
+        $_ENV['DB_DATABASE'] = $mariaDbConnection->database;
+        $_ENV['DB_USERNAME'] = $mariaDbConnection->username;
+        $_ENV['DB_PASSWORD'] = $mariaDbConnection->password;
+        $_ENV['APP_ENV'] = $_ENV['APP_ENV'] ?? 'production';
+        $_ENV['APP_DEBUG'] = $_ENV['APP_ENV'] ?? 'false';
+    }
+    catch (Exception $e) {
+        dd($e->getMessage());
+    }
+}
+
 return [
 
     /*
@@ -39,16 +59,24 @@ return [
             'prefix' => '',
         ],
 
+        'sqlite_testing' => [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host' => $_ENV['DB_HOST'] ?? env('DB_HOST', '127.0.0.1'),
+            'port' => $_ENV['DB_PORT'] ?? env('DB_PORT', '3306'),
+            'database' => $_ENV['DB_DATABASE'] ?? env('DB_DATABASE', 'forge'),
+            'username' => $_ENV['DB_USERNAME'] ?? env('DB_USERNAME', 'forge'),
+            'password' => $_ENV['DB_PASSWORD'] ?? env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
+            // 'charset' => 'utf8mb4',
+            // 'collation' => 'utf8mb4_unicode_ci',
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
             'prefix' => '',
             'strict' => true,
             'engine' => null,

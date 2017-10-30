@@ -1,0 +1,15 @@
+---
+applications:
+- name: dipl-backend
+  memory: 1G
+  instances: 1
+  buildpack: https://github.com/cloudfoundry/php-buildpack.git
+  services:
+    - dipl-s3
+    - dipl-mariadb
+    - dipl-elk
+    - dipl-auth0
+    - dipl-mailgun
+  env:
+    APP_KEY: base64:g9P2igVODJ42qN1FTQXBSE+DL0DvGQj9f35k0UyiPpY=
+    APP_CLIENT: https://dipl-frontend.scapp.io

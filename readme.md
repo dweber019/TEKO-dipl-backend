@@ -1,25 +1,6 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+## About this project
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
-
-## About Laravel
-
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb combination of simplicity, elegance, and innovation give you tools you need to build any application with which you are tasked.
+This project was build as a result of a diploma exam. It's an API to manage lessons and subjects of an educational institution.
 
 ## Learning Laravel
 
@@ -27,26 +8,65 @@ Laravel has the most extensive and thorough documentation and video tutorial lib
 
 If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 900 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## Installation
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](http://patreon.com/taylorotwell):
+There are a few thing to install before you can use this project.
+1. Install PHP 7 ([Tutorial Brew](https://developerjack.com/blog/2016/installing-php71-with-homebrew/))
+2. Install Composer ([Tutorial Brew](https://pilsniak.com/install-composer-mac-os/))
+3. Go to your project root and run "composer install"
+4. Install MySQL ([Tutorial Brew](https://gist.github.com/nrollr/3f57fc15ded7dddddcc4e82fe137b58e))
 
-- **[Vehikl](http://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Styde](https://styde.net)**
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
+### Setup CF services
 
-## Contributing
+MariaDB:
+1. Login to [Developer Portal](https://console.developer.swisscom.com)
+2. Create or navigate to a Org / Space
+3. Create a MariaDB Service
+4. Bind the service to this app
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+S3:
+1. Do step 1 and 2 from MariaDB
+2. Create a S3 Service
+3. Bind the service to this app
+4. Update your `.env` with the new service settings or use a other disk as cloud
 
-## Security Vulnerabilities
+ELK:
+1. Do step 1 and 2 from MariaDB
+2. Create a ELK Service
+3. Bind the service to this app
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+### Setup Mailgun
+Go to [Mailgun](https://www.mailgun.com/) and add a new domain like [this](https://help.mailgun.com/hc/en-us/articles/203637190-How-do-I-add-a-domain-).
+Fill in the domain and the domain key in `.env` and create a custom service in CF with name `dipl-mailgun`
+and two credential keys `MAILGUN_DOMAIN` and `MAILGUN_SECRET`.
+
+### Setup Auth0
+Go to [Auth0](https://auth0.com/) and create a new tenant.
+1. Create a Resource Server like described [here](https://auth0.com/docs/quickstart/backend/laravel#create-a-resource-server-api-).
+2. Create a client like in section "Get Your Application Keys" in [here](https://auth0.com/docs/quickstart/spa/angular2#get-your-application-keys).
+
+Now fill in the settings in `.env` and create a custom service in CF with name `dipl-auth0` and add the following
+credentials to it: `AUTH0_CLIENT_ID`, `AUTH0_CLIENT_SECRET`, `AUTH0_DOMAIN`, `AUTH0_AUDIENCE`, `AUTH0_CALLBACK_URL`
+
+## Run
+
+First you need to copy and rename the .env.example to .env and fill in the your configurations.
+
+After that the only thing to start up the backend is to enter `php artisan serve` and hit enter.
+
+## API Documentation
+
+Once the backend is up and running visit the url `../api/documentation` to view the API documentation.
+You will find a swagger documentation which is also oAuth enabled.
+
+## Tests
+
+To run the tests you have to enter `vendor/bin/phpunit` in the root of the project.
+
+## Deployment
+
+Currently there is a `manifest.yaml` file which holds all the Cloud Foundry specific information.
+In addition in the root of the project, in folder `.bp-config` are additional configurations regarding the PHP configuration.
 
 ## License
 

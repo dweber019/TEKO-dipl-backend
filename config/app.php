@@ -17,6 +17,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Frontend Client
+    |--------------------------------------------------------------------------
+    |
+    | This value is the url of the Frontend Client.
+    |
+    */
+    'client' => $_ENV['APP_CLIENT'] ?? env('APP_CLIENT', 'http://localhost:8100'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |
@@ -65,7 +75,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TZ', 'Europe/Zurich'),
 
     /*
     |--------------------------------------------------------------------------
@@ -104,7 +114,7 @@ return [
     |
     */
 
-    'key' => env('APP_KEY'),
+    'key' => $_ENV['APP_KEY'] ?? env('APP_KEY'),
 
     'cipher' => 'AES-256-CBC',
 
@@ -154,7 +164,7 @@ return [
         Illuminate\Hashing\HashServiceProvider::class,
         Illuminate\Mail\MailServiceProvider::class,
         Illuminate\Notifications\NotificationServiceProvider::class,
-        Illuminate\Pagination\PaginationServiceProvider::class,
+//        Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
         Illuminate\Queue\QueueServiceProvider::class,
         Illuminate\Redis\RedisServiceProvider::class,
@@ -167,6 +177,9 @@ return [
         /*
          * Package Service Providers...
          */
+        L5Swagger\L5SwaggerServiceProvider::class,
+        Barryvdh\Cors\ServiceProvider::class,
+        \Auth0\Login\LoginServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -225,6 +238,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Auth0' => \Auth0\Login\Facade\Auth0::class,
 
     ],
 
